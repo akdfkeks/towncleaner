@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"incremental": true,
+		"target": "es2020",
+		"lib": ["es2017", "esnext.asynciterable"],
+		"module": "commonjs",
+		"typeRoots": ["./node_modules/@types", "./src/types"],
+		"allowJs": true,
+		"checkJs": true,
+		"declaration": true,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"removeComments": true,
+		"allowSyntheticDefaultImports": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node",
+		"pretty": true,
+		"noEmit": false,
+		"esModuleInterop": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules", "test"]
+}
