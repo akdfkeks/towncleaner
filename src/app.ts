@@ -7,7 +7,7 @@ async function createServer() {
 
 	app.use(router());
 
-	app.listen(config.port, config.host, () => {
+	app.listen(config.port, () => {
 		console.log(`Server listening on http://${config.host}:${config.port}`);
 	});
 }
