@@ -16,7 +16,7 @@ const issuePointList: issuePoint[] = [
 		title: "현호집앞 GS25",
 		body: "현호네 집 앞 GS25 편의점 입니다",
 		class: "pollution",
-		latitude: "337.45475010681343",
+		latitude: "37.45475010681343",
 		longitude: "127.13059908661702",
 	},
 	{
