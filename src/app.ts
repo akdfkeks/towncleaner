@@ -2,6 +2,7 @@ import express from "express";
 import config from "./config";
 import router from "./api";
 import cors from "cors";
+import "reflect-metadata";
 
 async function createServer() {
 	const app = express();
