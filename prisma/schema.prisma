@@ -1,0 +1,50 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+enum Class {
+    ENV_H
+    ENV_I
+    SAFE_W
+    SAFE_D
+}
+
+model User {
+    index_id   Int      @unique @default(autoincrement())
+    id         String   @id @unique
+    pw         String
+    salt       String
+    role       Role     @default(USER)
+    is_active  Boolean  @default(true)
+    created_at DateTime @default(now())
+    point      Int      @default(0)
+    Issue      Issue[]
+}
+
+model Issue {
+    id            Int      @id @unique @default(autoincrement())
+    user          User?    @relation(fields: [user_id], references: [id])
+    user_id       String?
+    is_active     Boolean  @default(false)
+    is_solved     Boolean  @default(false)
+    title         String
+    body          String
+    created_at    DateTime @default(now())
+    user_latitude Decimal? @db.Decimal(16, 14)
+    user_lonitude Decimal? @db.Decimal(17, 14)
+}
+
+model IssueImage {
+    id  Int    @id @unique @default(autoincrement())
+    src String
+}

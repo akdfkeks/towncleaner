@@ -1,4 +1,4 @@
-import LoginDto from "@/dto/LoginDto";
+import LoginUser from "@/interface/LoginUser";
 import { Request, Response, NextFunction } from "express";
 
 /**
@@ -11,7 +11,7 @@ import { Request, Response, NextFunction } from "express";
  */
 export default {
 	async login(req: Request, res: Response) {
-		const loginDTO: LoginDto = {
+		const loginUser: LoginUser = {
 			id: req.body.user.id,
 			pw: req.body.user.pw,
 		};

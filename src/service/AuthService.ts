@@ -1,19 +1,14 @@
-/**
- * import DTO, Model 등등
- */
-
-import { Service } from "typedi";
-import userModel from "@/model/userModel";
+import { Inject, Service } from "typedi";
+import UserModel from "@/model/UserModel";
+import SignUpUser from "@/interface/SignUpUser";
 
 @Service()
 class AuthService {
-	userModel: userModel;
+	constructor(@Inject("UserModel") private userModel: UserModel) {}
 
-	constructor(userModel) {
-		this.userModel = userModel;
+	public async signUp(user: SignUpUser) {
+		const result = await this.userModel.signUp(user);
 	}
-
-	async signUp() {}
 	async localLogin() {}
 	async jwtAuth() {}
 }

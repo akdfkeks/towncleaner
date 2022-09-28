@@ -1,10 +1,9 @@
-import { Router } from "express";
-import mainController from "@/controller/mainController";
-import issuePoint from "@/interface/issuePoint";
+import { IssuePoint, IssueListRequest } from "@/interface/Issue";
+import { Inject, Service } from "typedi";
+import IssueModel from "@/model/IssueModel";
+import UserModel from "@/model/UserModel";
 
-const route = Router();
-
-const issuePointList: issuePoint[] = [
+const fixedIssuePointList: IssuePoint[] = [
 	{
 		title: "현호집",
 		body: "현호네 집입니다",
@@ -35,12 +34,24 @@ const issuePointList: issuePoint[] = [
 	},
 ];
 
-export default (app: Router) => {
-	app.use("/", route);
+@Service()
+class IssueService {
+	constructor(
+		@Inject("IssueModel") private issueModel: IssueModel,
+		@Inject("UserModel") private userModel: UserModel
+	) {}
 
-	route.get("/", async (req, res) => {
-		res.status(200).json({ success: true, message: "Issue-point list", data: issuePointList });
-	});
-	route.post("/", async (req, res) => {});
-	route.post("/", async (req, res) => {});
-};
+	async getFixedPointIssues() {
+		return { fixedIssuePointList };
+	}
+
+	async getUserPointIssues(userData: IssueListRequest) {
+		return {};
+	}
+	/**
+	 * userData 의 위도 및 경도를 기준으로
+	 * 인근의 이슈들을 조회하여 반환
+	 */
+}
+
+export default IssueService;
