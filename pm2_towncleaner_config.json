@@ -2,8 +2,7 @@
 	"apps": [
 		{
 			"name": "towncleaner",
-			"cwd": "src",
-			"scripts": "ts-node -r tsconfig-paths/register --files app.ts",
+			"scripts": "ts-node -r tsconfig-paths/register --files src/app.ts",
 			"watch": true,
 			"autorestart": true
 		}
