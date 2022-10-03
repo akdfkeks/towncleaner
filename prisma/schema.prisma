@@ -23,7 +23,6 @@ model User {
     index_id   Int      @unique @default(autoincrement())
     id         String   @id @unique
     pw         String
-    salt       String
     role       Role     @default(USER)
     is_active  Boolean  @default(true)
     created_at DateTime @default(now())
