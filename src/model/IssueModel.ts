@@ -1,4 +1,4 @@
-import prisma from "@/loader/prisma";
+import prisma from "../loader/prisma";
 import Container from "typedi";
 
 class IssueModel {

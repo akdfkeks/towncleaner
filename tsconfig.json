@@ -1,25 +1,26 @@
 {
 	"compilerOptions": {
 		"incremental": true,
-		"target": "es2020",
+		"target": "ES6",
 		"lib": ["es2017", "esnext.asynciterable"],
-		"module": "commonjs",
+		"outDir": "./dist",
+		"noEmit": false,
+		"declaration": true,
+		"sourceMap": false,
 		"typeRoots": ["./node_modules/@types", "./src/types"],
+
+		"module": "commonjs",
+		"moduleResolution": "Node",
+		"baseUrl": ".",
 		"allowJs": true,
 		"checkJs": true,
-		"declaration": true,
-		"sourceMap": true,
-		"outDir": "./dist",
 		"removeComments": true,
 		"allowSyntheticDefaultImports": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"forceConsistentCasingInFileNames": true,
-		"moduleResolution": "node",
 		"pretty": true,
-		"noEmit": false,
 		"esModuleInterop": true,
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
 		}

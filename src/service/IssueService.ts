@@ -1,7 +1,7 @@
-import { IssuePoint, UserLatlng } from "@/interface/Issue";
+import { IssuePoint, UserLatlng } from "../interface/Issue";
 import { Inject, Service } from "typedi";
-import IssueModel from "@/model/IssueModel";
-import AuthModel from "@/model/AuthModel";
+import IssueModel from "../model/IssueModel";
+import AuthModel from "../model/AuthModel";
 
 const fixedIssuePointList: IssuePoint[] = [
 	{

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import IssueService from "@/service/IssueService";
+import IssueService from "../../../service/IssueService";
 import Container from "typedi";
-import { UserLatlng } from "@/interface/Issue";
+import { UserLatlng } from "../../../interface/Issue";
 
 export default {
 	async fixedPoint(req: Request, res: Response) {

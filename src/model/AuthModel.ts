@@ -1,5 +1,5 @@
-import prisma from "@/loader/prisma";
-import { LoginForm, SignUpForm } from "@/interface/Auth";
+import prisma from "../loader/prisma";
+import { LoginForm, SignUpForm } from "../interface/Auth";
 import Container from "typedi";
 
 class AuthModel {

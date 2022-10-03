@@ -1,5 +1,4 @@
-import { LoginRequestBody } from "@/interface/Auth";
-import { LoginForm, SignUpForm } from "@/interface/Auth";
+import { LoginForm, SignUpForm } from "../../../interface/Auth";
 import { Request, Response, NextFunction } from "express";
 import AuthService from "../../../service/AuthService";
 import Container from "typedi";

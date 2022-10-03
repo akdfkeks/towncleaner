@@ -1,7 +1,7 @@
 import { Inject, Service } from "typedi";
-import AuthModel from "@/model/AuthModel";
-import { SignUpForm } from "@/interface/Auth";
-import { LoginForm, LoginResult } from "@/interface/Auth";
+import AuthModel from "../model/AuthModel";
+import { SignUpForm } from "../interface/Auth";
+import { LoginForm, LoginResult } from "../interface/Auth";
 import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 
