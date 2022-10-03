@@ -1,7 +1,7 @@
 import { IssuePoint, UserLatlng } from "@/interface/Issue";
 import { Inject, Service } from "typedi";
 import IssueModel from "@/model/IssueModel";
-import UserModel from "@/model/AuthModel";
+import AuthModel from "@/model/AuthModel";
 
 const fixedIssuePointList: IssuePoint[] = [
 	{
@@ -49,7 +49,7 @@ const fixedIssuePointList: IssuePoint[] = [
 @Service()
 class IssueService {
 	@Inject("IssueModel") private issueModel: IssueModel;
-	@Inject("UserModel") private userModel: UserModel;
+	@Inject("AuthModel") private authModel: AuthModel;
 
 	async getFixedPointIssues() {
 		return { fixedIssuePointList };
