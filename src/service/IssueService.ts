@@ -48,10 +48,8 @@ const fixedIssuePointList: IssuePoint[] = [
 
 @Service()
 class IssueService {
-	constructor(
-		@Inject("IssueModel") private issueModel: IssueModel,
-		@Inject("UserModel") private userModel: UserModel
-	) {}
+	@Inject("IssueModel") private issueModel: IssueModel;
+	@Inject("UserModel") private userModel: UserModel;
 
 	async getFixedPointIssues() {
 		return { fixedIssuePointList };
