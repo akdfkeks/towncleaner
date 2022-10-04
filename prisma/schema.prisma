@@ -31,16 +31,17 @@ model User {
 }
 
 model Issue {
-    id            Int      @id @unique @default(autoincrement())
-    user          User?    @relation(fields: [user_id], references: [id])
-    user_id       String?
-    is_active     Boolean  @default(false)
-    is_solved     Boolean  @default(false)
-    title         String
-    body          String
-    created_at    DateTime @default(now())
-    user_latitude Decimal? @db.Decimal(16, 14)
-    user_lonitude Decimal? @db.Decimal(17, 14)
+    id         Int      @id @unique @default(autoincrement())
+    user       User?    @relation(fields: [user_id], references: [id])
+    user_id    String?
+    is_active  Boolean  @default(false)
+    is_solved  Boolean  @default(false)
+    title      String
+    body       String
+    created_at DateTime @default(now())
+    lat        Decimal? @db.Decimal(16, 14)
+    lng        Decimal? @db.Decimal(17, 14)
+    img        String?
 }
 
 model IssueImage {
