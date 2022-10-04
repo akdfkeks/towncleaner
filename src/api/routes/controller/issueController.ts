@@ -6,7 +6,7 @@ import { UserBound } from "../../../interface/Issue";
 export default {
 	async fixedPoint(req: Request, res: Response) {
 		const IssueServiceInstance = Container.get(IssueService);
-		const data = await IssueServiceInstance.getFixedPointIssues();
+		const { data } = await IssueServiceInstance.getFixedPointIssues();
 
 		res.status(200).json({
 			success: true,

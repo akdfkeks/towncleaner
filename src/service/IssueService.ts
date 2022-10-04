@@ -52,10 +52,11 @@ class IssueService {
 	@Inject("AuthModel") private authModel: AuthModel;
 
 	public async getFixedPointIssues() {
-		return { fixedIssuePointList };
+		return { data: fixedIssuePointList };
 	}
 
 	public async getUserPointIssues(userData: UserBound) {
+		console.log(userData);
 		/**
 		 * (임시) 유저 기준으로 좌우 2 km 를 넘는 경우에
 		 * 히트맵? 형식으로 보여줄까
@@ -75,7 +76,8 @@ class IssueService {
 				img: issue.img,
 			};
 		});
-		return { data };
+		// return { data };
+		return { data: fixedIssuePointList };
 	}
 
 	public async getIssueInfo(issueId: string) {
