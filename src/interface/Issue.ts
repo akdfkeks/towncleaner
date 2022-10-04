@@ -1,9 +1,14 @@
-export interface UserLatlng {
-	lat: string;
-	lng: string;
+export interface UserBound {
+	southWest: Point;
+	northEast: Point;
 }
 
-export interface AddIssueRequest extends UserLatlng {}
+export interface Point {
+	lat: Number;
+	lng: Number;
+}
+
+export interface AddIssueRequest extends UserBound {}
 
 /**
  * 유저에게 반환될 이슈는 다음의 요소를 가져야함
@@ -17,6 +22,11 @@ export interface IssuePoint {
 	title: string;
 	body: string;
 	class: string;
-	location: UserLatlng;
+	location: TempPoint;
 	img: string;
+}
+
+interface TempPoint {
+	lat: string;
+	lng: string;
 }
