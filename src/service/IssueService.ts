@@ -1,4 +1,4 @@
-import { IssuePoint, UserLatlng } from "../interface/Issue";
+import { IssuePoint, UserBound } from "../interface/Issue";
 import { Inject, Service } from "typedi";
 import IssueModel from "../model/IssueModel";
 import AuthModel from "../model/AuthModel";
@@ -51,18 +51,45 @@ class IssueService {
 	@Inject("IssueModel") private issueModel: IssueModel;
 	@Inject("AuthModel") private authModel: AuthModel;
 
-	async getFixedPointIssues() {
+	public async getFixedPointIssues() {
 		return { fixedIssuePointList };
 	}
 
-	async getUserPointIssues(userData: UserLatlng) {
-		const data = await this.issueModel.getIssuesByUserLocation(userData);
+	public async getUserPointIssues(userData: UserBound) {
+		/**
+		 * (임시) 유저 기준으로 좌우 2 km 를 넘는 경우에
+		 * 히트맵? 형식으로 보여줄까
+		 */
+		const { issueList } = await this.issueModel.getIssuesByUserLocation(userData);
+		const data = issueList.map((issue) => {
+			return {
+				id: issue.id,
+				userId: issue.user_id,
+				title: issue.title,
+				body: issue.body,
+				created_at: issue.created_at,
+				location: {
+					lat: issue.lat,
+					lng: issue.lng,
+				},
+				img: issue.img,
+			};
+		});
 		return { data };
 	}
 
-	async getIssueInfo(issueId: string) {
+	public async getIssueInfo(issueId: string) {
 		const data = await this.issueModel.getIssueInfo(issueId);
 		return { data };
+	}
+
+	private getBoundSize(userData: UserBound) {
+		const width = Number(userData.northEast.lng) - Number(userData.southWest.lng);
+		const height = Number(userData.northEast.lat) - Number(userData.southWest.lat);
+
+		const result = width * height;
+
+		if (result) return true;
 	}
 }
 
