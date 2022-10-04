@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import IssueService from "../../../service/IssueService";
 import Container from "typedi";
-import { UserLatlng } from "../../../interface/Issue";
+import { UserBound } from "../../../interface/Issue";
 
 export default {
 	async fixedPoint(req: Request, res: Response) {
@@ -15,20 +15,30 @@ export default {
 		});
 	},
 
-	async userPoint(req: Request, res: Response) {
-		const userPointData: UserLatlng = {
-			lat: req.body.issueRequest.user_latitude,
-			lng: req.body.issueRequest.user_longitude,
+	async userPoint(req: Request, res: Response, next: NextFunction) {
+		const userPointData: UserBound = {
+			southWest: {
+				lat: Number(req.body.user.southWest.lat),
+				lng: Number(req.body.user.southWest.lng),
+			},
+			northEast: {
+				lat: Number(req.body.user.northEast.lat),
+				lng: Number(req.body.user.northEast.lng),
+			},
 		};
 
-		const IssueServiceInstance = Container.get(IssueService);
-		const { data } = await IssueServiceInstance.getUserPointIssues(userPointData);
+		try {
+			const IssueServiceInstance = Container.get(IssueService);
+			const { data } = await IssueServiceInstance.getUserPointIssues(userPointData);
 
-		res.status(200).json({
-			success: true,
-			message: "List of issues around the user point",
-			data: data,
-		});
+			res.status(200).json({
+				success: true,
+				message: "UserPoint issue list",
+				data: data,
+			});
+		} catch (e) {
+			next(e);
+		}
 	},
 
 	async issueInfo(req: Request, res: Response) {
