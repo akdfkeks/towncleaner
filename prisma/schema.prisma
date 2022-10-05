@@ -7,44 +7,61 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum Role {
-    USER
-    ADMIN
-}
-
-enum Class {
-    ENV_H
-    ENV_I
-    SAFE_W
-    SAFE_D
-}
-
 model User {
-    index_id   Int      @unique @default(autoincrement())
-    id         String   @id @unique
-    pw         String
-    role       Role     @default(USER)
-    is_active  Boolean  @default(true)
-    created_at DateTime @default(now())
-    point      Int      @default(0)
+    id         String    @id @db.VarChar(20)
+    // index_id   Int       @unique @default(autoincrement()) @db.UnsignedInt
+    pw         String    @db.VarChar(255)
+    role       User_role @default(user)
+    activated  Boolean   @default(true)
+    created_at DateTime  @default(now()) @db.DateTime(0)
+    broom      Int       @default(0) @db.UnsignedInt
     Issue      Issue[]
 }
 
 model Issue {
-    id         Int      @id @unique @default(autoincrement())
-    user       User?    @relation(fields: [user_id], references: [id])
-    user_id    String?
-    is_active  Boolean  @default(false)
-    is_solved  Boolean  @default(false)
-    title      String
-    body       String
-    created_at DateTime @default(now())
-    lat        Decimal? @db.Decimal(16, 14)
-    lng        Decimal? @db.Decimal(17, 14)
-    img        String?
+    id         Int         @id @default(autoincrement()) @db.UnsignedInt
+    user       User        @relation(fields: [user_id], references: [id])
+    user_id    String      @db.VarChar(20)
+    activated  Boolean     @default(true)
+    solved     Boolean     @default(false)
+    title      String?     @db.VarChar(50)
+    body       String?     @db.Text
+    created_at DateTime    @default(now()) @db.DateTime(0)
+    user_lat   Decimal     @db.Decimal(16, 14)
+    user_lng   Decimal     @db.Decimal(17, 14)
+    Issue_img  Issue_img[]
 }
 
-model IssueImage {
-    id  Int    @id @unique @default(autoincrement())
-    src String
+model Detected_obj {
+    id       Int           @id @default(autoincrement()) @db.UnsignedInt
+    img      Issue_img     @relation(fields: [img_id], references: [id])
+    img_id   Int           @db.UnsignedInt
+    class    Object_class? @relation(fields: [class_id], references: [id])
+    class_id Int?          @db.UnsignedInt
+    prob     Float         @default(0) @db.Float
+}
+
+model Issue_img {
+    id           Int            @id @default(autoincrement()) @db.UnsignedInt
+    issue        Issue?         @relation(fields: [issue_id], references: [id])
+    issue_id     Int?           @db.UnsignedInt
+    org_name     String         @db.VarChar(255)
+    src          String?        @db.VarChar(255)
+    uploaded_at  DateTime       @default(now()) @db.DateTime(0)
+    time         DateTime?      @db.DateTime(0)
+    lat          Decimal        @default(0.00000000000000) @db.Decimal(16, 14)
+    lng          Decimal        @default(0.00000000000000) @db.Decimal(17, 14)
+    Detected_obj Detected_obj[]
+}
+
+model Object_class {
+    id           Int            @id @default(autoincrement()) @db.UnsignedInt
+    name         String         @db.VarChar(255)
+    Detected_obj Detected_obj[]
+}
+
+enum User_role {
+    user
+    admin
+    test
 }

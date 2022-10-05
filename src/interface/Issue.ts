@@ -21,7 +21,7 @@ export interface AddIssueRequest extends UserBound {}
 export interface IssuePoint {
 	title: string;
 	body: string;
-	class: string;
+	class: Number;
 	location: TempPoint;
 	img: string;
 }

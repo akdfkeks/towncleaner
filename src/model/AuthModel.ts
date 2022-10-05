@@ -1,4 +1,4 @@
-import prisma from "../loader/prisma";
+import prisma from "../config/prisma";
 import { LoginForm, SignUpForm } from "../interface/Auth";
 import Container from "typedi";
 

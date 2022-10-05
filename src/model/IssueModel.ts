@@ -1,4 +1,4 @@
-import prisma from "../loader/prisma";
+import prisma from "../config/prisma";
 import Container from "typedi";
 import { UserBound } from "@/interface/Issue";
 
@@ -9,26 +9,25 @@ class IssueModel {
 	async getIssuesByUserLocation(data: UserBound) {
 		const issueList = await prisma.issue.findMany({
 			where: {
-				lat: {
+				user_lat: {
 					lte: Number(data.northEast.lat), // max
 					gte: Number(data.southWest.lat), // min
 				},
-				lng: {
+				user_lng: {
 					lte: Number(data.northEast.lng), // max
 					gte: Number(data.southWest.lng), // min
 				},
-				is_active: true,
+				activated: true,
 			},
 			select: {
 				id: true,
 				user_id: true,
-				is_solved: true,
+				solved: true,
 				title: true,
 				body: true,
 				created_at: true,
-				lat: true,
-				lng: true,
-				img: true,
+				user_lat: true,
+				user_lng: true,
 			},
 		});
 		if (issueList) {
@@ -43,13 +42,18 @@ class IssueModel {
 		});
 		const createResult = await prisma.issue.create({
 			data: {
-				user_id: user.id,
+				user: {
+					connect: {
+						id: user.id,
+					},
+				},
 				title: data.issue.title,
 				body: data.issue.body,
-				lat: data.issue.location.lat,
-				lng: data.issue.location.lng,
+				user_lat: data.issue.location.lat,
+				user_lng: data.issue.location.lng,
 			},
 		});
+		return { data: createResult };
 	}
 
 	async getIssueInfo(issueId: string) {
