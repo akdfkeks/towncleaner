@@ -6,3 +6,6 @@ build
 *.env
 *.txt
 *.http
+*.sql
+test
+upload
