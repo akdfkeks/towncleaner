@@ -1,11 +1,11 @@
 import prisma from "../config/prisma";
-import { LoginForm, SignUpForm } from "../interface/Auth";
+import { LoginRequest, SignUpRequest } from "../interface/Auth";
 import Container from "typedi";
 
 class AuthModel {
 	constructor() {}
 
-	async signUp(userData: SignUpForm) {
+	async signUp(userData: SignUpRequest) {
 		const signUpResult = await prisma.user.create({
 			data: {
 				id: userData.id,
@@ -17,10 +17,10 @@ class AuthModel {
 		} else throw new Error("Fail to create account");
 	}
 
-	async getUserData(loginForm: LoginForm) {
+	async getUserData(loginForm: LoginRequest) {
 		const user = await prisma.user.findUnique({
 			where: {
-				id: loginForm.userId,
+				id: loginForm.id,
 			},
 			select: {
 				id: true,
@@ -30,7 +30,7 @@ class AuthModel {
 		return user;
 	}
 
-	async getUserExist(user: SignUpForm) {
+	async getUserExist(user: SignUpRequest) {
 		const isExist = await prisma.user.count({ where: { id: user.id } });
 		return isExist;
 	}

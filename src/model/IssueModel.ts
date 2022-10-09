@@ -1,43 +1,45 @@
 import prisma from "../config/prisma";
 import Container from "typedi";
-import { UserBound } from "@/interface/Issue";
+import { IssueCreateReq, UserBound } from "@/interface/Issue";
 
 class IssueModel {
 	constructor() {}
-	async postIssue() {}
 
-	async getIssuesByUserLocation(data: UserBound) {
-		const issueList = await prisma.issue.findMany({
+	async getIssuesByUserBound(userBound: UserBound) {
+		const userBoundIssueList = await prisma.issue.findMany({
 			where: {
 				user_lat: {
-					lte: Number(data.northEast.lat), // max
-					gte: Number(data.southWest.lat), // min
+					lte: Number(userBound.ne.lat), // max
+					gte: Number(userBound.sw.lat), // min
 				},
 				user_lng: {
-					lte: Number(data.northEast.lng), // max
-					gte: Number(data.southWest.lng), // min
+					lte: Number(userBound.ne.lng), // max
+					gte: Number(userBound.sw.lng), // min
 				},
 				activated: true,
+				solved: false,
 			},
 			select: {
 				id: true,
 				user_id: true,
 				solved: true,
 				title: true,
+				class: true,
 				body: true,
 				created_at: true,
 				user_lat: true,
 				user_lng: true,
 			},
 		});
-		if (issueList) {
-			return { issueList };
+
+		if (userBoundIssueList) {
+			return userBoundIssueList;
 		} else throw new Error("No issues found");
 	}
 
-	async createIssue(data) {
+	async createIssue(issueRequest: IssueCreateReq) {
 		const user = await prisma.user.findUnique({
-			where: { id: data.user.id },
+			where: { id: issueRequest.user.id },
 			select: { id: true },
 		});
 		const createResult = await prisma.issue.create({
@@ -47,13 +49,14 @@ class IssueModel {
 						id: user.id,
 					},
 				},
-				title: data.issue.title,
-				body: data.issue.body,
-				user_lat: data.issue.location.lat,
-				user_lng: data.issue.location.lng,
+				title: issueRequest.issue.title,
+				class: issueRequest.issue.class,
+				body: issueRequest.issue.body,
+				user_lat: Number(issueRequest.issue.location.lat),
+				user_lng: Number(issueRequest.issue.location.lng),
 			},
 		});
-		return { data: createResult };
+		return createResult;
 	}
 
 	async getIssueInfo(issueId: string) {

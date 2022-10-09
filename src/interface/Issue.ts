@@ -1,32 +1,38 @@
-export interface UserBound {
-	southWest: Point;
-	northEast: Point;
+import { Request, Response } from "express";
+import { RequestUser } from "./Auth";
+
+export interface UserBoundIssuesReq {
+	user: RequestUser;
+	bound: UserBound;
 }
 
-export interface Point {
+export interface UserBound {
+	sw: LatLng;
+	ne: LatLng;
+}
+
+export interface Issue {
+	title?: string;
+	body?: string;
+	class?: number;
+	location?: LatLng;
+	imgUrl?: string;
+}
+
+export interface LatLng {
 	lat: Number;
 	lng: Number;
 }
 
-export interface AddIssueRequest extends UserBound {}
-
-/**
- * 유저에게 반환될 이슈는 다음의 요소를 가져야함
- * 1. 제목
- * 2. 내용
- * 3. 사진
- * 4. 클래스
- * 5. 위치(위도, 경도)
- */
-export interface IssuePoint {
-	title: string;
-	body: string;
-	class: Number;
-	location: TempPoint;
-	img: string;
+export interface IssueCreateReq {
+	user: RequestUser;
+	issue: IssueContent;
+	file?: any;
 }
 
-interface TempPoint {
-	lat: string;
-	lng: string;
+export interface IssueContent {
+	title?: string;
+	class?: number;
+	body?: string;
+	location?: LatLng;
 }
