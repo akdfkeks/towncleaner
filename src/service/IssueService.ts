@@ -1,48 +1,49 @@
-import { IssuePoint, UserBound } from "../interface/Issue";
+import { Issue, IssueCreateReq, UserBound, UserBoundIssuesReq } from "../interface/Issue";
 import { Inject, Service } from "typedi";
 import IssueModel from "../model/IssueModel";
 import AuthModel from "../model/AuthModel";
+import config from "../config";
 
-const fixedIssuePointList: IssuePoint[] = [
+const fixedIssuePointList: Issue[] = [
 	{
 		title: "현호집",
 		body: "현호네 집입니다",
 		class: 0,
 		location: {
-			lat: "37.454448442968726",
-			lng: "127.130440332797",
+			lat: 37.454448442968726,
+			lng: 127.130440332797,
 		},
-		img: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
+		imgUrl: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
 	},
 	{
 		title: "현호집앞 GS25",
 		body: "현호네 집 앞 GS25 편의점 입니다",
 		class: 1,
 		location: {
-			lat: "37.45475010681343",
-			lng: "127.13059908661702",
+			lat: 37.45475010681343,
+			lng: 127.13059908661702,
 		},
-		img: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
+		imgUrl: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
 	},
 	{
 		title: "현호집주변 CU",
 		body: "현호네 집 앞 CU 편의점 입니다",
 		class: 2,
 		location: {
-			lat: "37.4540213271891",
-			lng: "127.12965410009392",
+			lat: 37.4540213271891,
+			lng: 127.12965410009392,
 		},
-		img: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
+		imgUrl: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
 	},
 	{
 		title: "현호집앞 더러운곳",
 		body: "현호가 쓰레기 무단투기하는 장소입니다",
 		class: 3,
 		location: {
-			lat: "37.45413091149697",
-			lng: "127.13037196908954",
+			lat: 37.45413091149697,
+			lng: 127.13037196908954,
 		},
-		img: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
+		imgUrl: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
 	},
 ];
 
@@ -55,18 +56,17 @@ class IssueService {
 		return { data: fixedIssuePointList };
 	}
 
-	public async getUserPointIssues(userData: UserBound) {
-		console.log(userData);
-		/**
-		 * (임시) 유저 기준으로 좌우 2 km 를 넘는 경우에
-		 * 히트맵? 형식으로 보여줄까
-		 */
-		const { issueList } = await this.issueModel.getIssuesByUserLocation(userData);
-		const data = issueList.map((issue) => {
+	public async getUserPointIssueList(userData: UserBoundIssuesReq) {
+		const { user, bound } = userData;
+
+		const userBoundIssueList = await this.issueModel.getIssuesByUserBound(bound);
+
+		const userPointIssueList = userBoundIssueList.map((issue) => {
 			return {
 				id: issue.id,
 				userId: issue.user_id,
 				title: issue.title,
+				category: issue.class,
 				body: issue.body,
 				created_at: issue.created_at,
 				location: {
@@ -75,19 +75,19 @@ class IssueService {
 				},
 			};
 		});
-		// return { data };
 
-		return { data: fixedIssuePointList };
+		return { userPointIssueList: fixedIssuePointList };
 	}
 
 	public async getIssueInfo(issueId: string) {
+		//응깃
 		const data = await this.issueModel.getIssueInfo(issueId);
 		return { data };
 	}
 
-	public async reportIssue() {
-		const { data } = await this.issueModel.createIssue({});
-		return data;
+	public async createIssue(issue: IssueCreateReq) {
+		const createResult = await this.issueModel.createIssue(issue);
+		return { createResult };
 	}
 
 	// private getBoundSize(userData: UserBound) {
