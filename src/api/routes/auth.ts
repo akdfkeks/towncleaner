@@ -9,4 +9,6 @@ export default (app: Router) => {
 	route.get("/", async (req, res) => {});
 	route.post("/login", authController.login);
 	route.post("/signup", authController.signup);
+
+	return app;
 };

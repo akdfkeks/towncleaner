@@ -1,13 +1,13 @@
-import { LoginForm, SignUpForm } from "../../../interface/Auth";
+import { LoginRequest, SignUpRequest } from "../../../interface/Auth";
 import { Request, Response, NextFunction } from "express";
 import AuthService from "../../../service/AuthService";
 import Container from "typedi";
 
 export default {
 	async login(req: Request, res: Response, next: NextFunction) {
-		const loginRequest: LoginForm = {
-			userId: req.body.user.id,
-			userPw: req.body.user.pw,
+		const loginRequest: LoginRequest = {
+			id: req.body.user.id,
+			pw: req.body.user.pw,
 		};
 		try {
 			const authServiceInstance = Container.get(AuthService);
@@ -24,7 +24,7 @@ export default {
 	},
 
 	async signup(req: Request, res: Response, next: NextFunction) {
-		const signupRequest: SignUpForm = {
+		const signupRequest: SignUpRequest = {
 			id: req.body.user.id,
 			pw: req.body.user.pw,
 		};

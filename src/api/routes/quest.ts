@@ -9,4 +9,6 @@ export default (app: Router) => {
 	route.get("/", questController.list);
 	// route.post("/login", questController);
 	// route.post("/signup", questController);
+
+	return app;
 };

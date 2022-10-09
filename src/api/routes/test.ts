@@ -7,7 +7,9 @@ const route = Router();
 export default (app: Router) => {
 	app.use("/test", route);
 
-	route.post("/", multerUpload.single("img"), test);
-	// route.post("/login", questController);
-	// route.post("/signup", questController);
+	route.use("/msg", (req, res) => {
+		console.log(req.body);
+	});
+
+	return app;
 };

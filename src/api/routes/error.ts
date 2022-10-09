@@ -18,6 +18,7 @@ export default (app: Router) => {
 		return next(err);
 	});
 	app.use((err, req, res, next) => {
+		console.log(err);
 		res.status(err.status || 500);
 		res.json({
 			success: false,
@@ -26,4 +27,5 @@ export default (app: Router) => {
 			},
 		});
 	});
+	return app;
 };
