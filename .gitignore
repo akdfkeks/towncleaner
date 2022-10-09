@@ -8,4 +8,4 @@ build
 *.http
 *.sql
 test
-upload
+uploads
