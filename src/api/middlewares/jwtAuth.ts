@@ -1,8 +1,9 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { LoginRequestBody } from "../../interface/Auth";
 import passport from "passport";
+import config from "../../config";
 
-function jwtAuth(req: LoginRequestBody, res: Response, next: NextFunction) {
+export function jwtAuth(req: LoginRequestBody, res: Response, next: NextFunction) {
 	if (!req.headers.authorization) {
 		req.body.user = null;
 		req.body.authorization = false;
@@ -20,4 +21,9 @@ function jwtAuth(req: LoginRequestBody, res: Response, next: NextFunction) {
 	})(req, res, next);
 }
 
-export default jwtAuth;
+export const devAuth = (req: Request, res: Response, next: NextFunction) => {
+	if (config.isDev) {
+		req.reqUser = { id: "test1" };
+	}
+	next();
+};
