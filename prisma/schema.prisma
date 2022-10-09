@@ -24,6 +24,7 @@ model Issue {
     activated  Boolean     @default(true)
     solved     Boolean     @default(false)
     title      String?     @db.VarChar(50)
+    class      Int?
     body       String?     @db.Text
     created_at DateTime    @default(now()) @db.DateTime(0)
     user_lat   Decimal     @db.Decimal(16, 14)
