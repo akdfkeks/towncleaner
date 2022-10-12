@@ -1,8 +1,9 @@
 {
-	"name": "towncleaner",
+	"name": "valun-api",
 	"version": "1.0.0",
 	"main": "src/app.ts",
 	"license": "MIT",
+	"author": "akdfkeks@gmail.com",
 	"scripts": {
 		"prebuild": "rm -rf dist",
 		"build": "yarn etsc && tsc-alias",
