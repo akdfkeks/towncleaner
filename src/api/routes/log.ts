@@ -6,8 +6,7 @@ export default (app: Router) => {
 	app.use("/", route);
 
 	route.use("/", (req, res, next) => {
-		console.log(`Request Url : ${req.url}`);
-		next();
+		res.status(200).send("Home");
 	});
 
 	route.get("/log", (req, res, next) => {
