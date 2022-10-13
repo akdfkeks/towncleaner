@@ -9,12 +9,12 @@ import log from "./routes/log";
 export default () => {
 	const app = Router();
 
-	log(app);
 	auth(app);
 	issue(app);
 	quest(app);
 	//deal(app)
 	test(app);
+	log(app);
 	error(app);
 
 	return app;
