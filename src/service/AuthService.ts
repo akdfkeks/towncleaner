@@ -47,7 +47,7 @@ class AuthService {
 
 		const generatedToken = jwt.sign(payload, process.env.JWT_SECRET, {
 			expiresIn: "2h",
-			issuer: "towncleaner",
+			issuer: "valun-api",
 		});
 
 		return { token: generatedToken };

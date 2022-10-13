@@ -1,10 +1,11 @@
-import { Issue, IssueCreateReq, UserBound, UserBoundIssuesReq } from "../interface/Issue";
+import { IssueInfo, IssueCreateReq, Bound, IssueListReq } from "../interface/Issue";
 import { Inject, Service } from "typedi";
 import IssueModel from "../model/IssueModel";
 import AuthModel from "../model/AuthModel";
 import config from "../config";
+import { detectObject } from "../function/childWorker";
 
-const fixedIssuePointList: Issue[] = [
+const fixedIssuePointList: IssueInfo[] = [
 	{
 		title: "현호집",
 		body: "현호네 집입니다",
@@ -56,11 +57,11 @@ class IssueService {
 		return { data: fixedIssuePointList };
 	}
 
-	public async getUserPointIssueList(userData: UserBoundIssuesReq) {
+	public async getUserPointIssueList(userData: IssueListReq) {
 		const { user, bound } = userData;
 
-		const userBoundIssueList = await this.issueModel.getIssuesByUserBound(bound);
-
+		// 여기 변수명 헷갈리니까 수정하기.
+		const userBoundIssueList = await this.issueModel.getIssueListByUserBound(bound);
 		const userPointIssueList = userBoundIssueList.map((issue) => {
 			return {
 				id: issue.id,
@@ -76,18 +77,30 @@ class IssueService {
 			};
 		});
 
+		// 임시로 fixedIssuePointList 반환
 		return { userPointIssueList: fixedIssuePointList };
 	}
 
-	public async getIssueInfo(issueId: string) {
-		//응깃
+	public async getIssueInfo(issueId: number) {
 		const data = await this.issueModel.getIssueInfo(issueId);
 		return { data };
 	}
 
-	public async createIssue(issue: IssueCreateReq) {
-		const createResult = await this.issueModel.createIssue(issue);
-		return { createResult };
+	public async createIssue(issueReq: IssueCreateReq) {
+		const issueCreationResult = await this.issueModel.createIssue(issueReq);
+		const { fileName } = issueReq;
+
+		if (!issueCreationResult) throw new Error("Issue creation failed");
+
+		// 여기서 이미지를 업로드
+		/*
+		TODO: Child Process 생성하여 ai 모델에 전달 하는 비동기함수 하나 만들어서 
+		여기서 실행만 하기. 해당 함수 안에서는, 파일 이름을 통해서 .py 에 이미지 전달 후 
+		결과가 나오면 DB 에 분류 결과 저장
+		*/
+		detectObject(fileName, issueCreationResult.id);
+
+		return { createdIssue: issueCreationResult };
 	}
 
 	// private getBoundSize(userData: UserBound) {

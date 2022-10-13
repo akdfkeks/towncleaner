@@ -1,11 +1,11 @@
 import prisma from "../config/prisma";
 import Container from "typedi";
-import { IssueCreateReq, UserBound } from "@/interface/Issue";
+import { IssueCreateReq, Bound } from "../interface/Issue";
 
 class IssueModel {
 	constructor() {}
 
-	async getIssuesByUserBound(userBound: UserBound) {
+	async getIssueListByUserBound(userBound: Bound) {
 		const userBoundIssueList = await prisma.issue.findMany({
 			where: {
 				user_lat: {
@@ -42,7 +42,7 @@ class IssueModel {
 			where: { id: issueRequest.user.id },
 			select: { id: true },
 		});
-		const createResult = await prisma.issue.create({
+		const creationResult = await prisma.issue.create({
 			data: {
 				user: {
 					connect: {
@@ -52,17 +52,18 @@ class IssueModel {
 				title: issueRequest.issue.title,
 				class: issueRequest.issue.class,
 				body: issueRequest.issue.body,
-				user_lat: Number(issueRequest.issue.location.lat),
-				user_lng: Number(issueRequest.issue.location.lng),
+				user_lat: Number(issueRequest.issue.user_loc.lat),
+				user_lng: Number(issueRequest.issue.user_loc.lng),
+				// activated: false,
 			},
 		});
-		return createResult;
+		return creationResult;
 	}
 
-	async getIssueInfo(issueId: string) {
+	async getIssueInfo(issueId: number) {
 		const issueInfo = await prisma.issue.findUnique({
 			where: {
-				id: parseInt(issueId),
+				id: issueId,
 			},
 		});
 	}

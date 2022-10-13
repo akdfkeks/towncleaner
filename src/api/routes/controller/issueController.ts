@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import IssueService from "../../../service/IssueService";
+import ImageService from "../../../service/ImageService";
 import Container from "typedi";
-import { IssueCreateReq, UserBoundIssuesReq } from "../../../interface/Issue";
+import { IssueCreateReq, IssueListReq } from "../../../interface/Issue";
 import config from "../../../config";
-import { saveFileToLocal } from "../../middlewares/saveFile";
+import { MSG } from "../../../config/message";
 
 export default {
 	async fixedPoint(req: Request, res: Response) {
@@ -20,7 +21,7 @@ export default {
 	async userBound(req: Request, res: Response, next: NextFunction) {
 		// ------------------------isDev------------------------
 		if (config.isDev) {
-			req.body.user.id = "test1";
+			req.reqUser = { id: "test1" };
 			req.body.bound.ne = {
 				lat: 37.47297777482192,
 				lng: 127.14582172878094,
@@ -32,8 +33,8 @@ export default {
 		}
 		// ------------------------isDev------------------------
 
-		const userBoundIssusesReq: UserBoundIssuesReq = {
-			user: { id: req.body.user.id },
+		const userBoundIssusesReq: IssueListReq = {
+			user: { id: req.reqUser.id },
 			bound: {
 				sw: {
 					lat: Number(req.body.user.southWest.lat),
@@ -65,13 +66,14 @@ export default {
 
 	async issueInfo(req: Request, res: Response, next: NextFunction) {
 		const { issueNo } = req.params;
+		const issueNumber = parseInt(issueNo, 10);
 		try {
 			const IssueServiceInstance = Container.get(IssueService);
-			const { data } = await IssueServiceInstance.getIssueInfo(issueNo);
+			const { data } = await IssueServiceInstance.getIssueInfo(issueNumber);
 
 			res.status(200).json({
 				success: true,
-				message: "Issue Info",
+				message: MSG.SUCCESS.ISSUE.LOOKUP,
 				data: data, // TODO:
 			});
 		} catch (e) {
@@ -80,37 +82,34 @@ export default {
 	},
 
 	async createIssue(req: Request, res: Response, next: NextFunction) {
-		const body = req.body;
-		console.log(JSON.stringify(body.issue, null, 2));
+		// Image 는 multer 가 로컬에 저장함
 		const issueCreateReq: IssueCreateReq = {
 			user: req.reqUser,
 			issue: {
 				title: req.body.title,
-				class: Number(req.body.class),
+				class: parseInt(req.body.class),
 				body: req.body.body,
-				location: {
+				user_loc: {
 					lat: req.body.lat,
 					lng: req.body.lng,
 				},
 			},
-			file: req.file || null,
-			// issue: {
-			// 	title: req.body.issue.title,
-			// 	class: req.body.issue.class,
-			// 	location: req.body.issue.location,
-			// 	body: req.body.issue.body,
-			// },
+			fileName: req.file.filename,
 		};
 
 		try {
 			const IssueServiceInstance = Container.get(IssueService);
-			const { createResult } = await IssueServiceInstance.createIssue(issueCreateReq);
+			const ImageServiceInstance = Container.get(ImageService);
+			const { createdIssue } = await IssueServiceInstance.createIssue(issueCreateReq);
 
-			res.status(200).json({
+			if (!createdIssue) throw new Error(MSG.FAILURE.ISSUE.CREATE);
+
+			return res.status(200).json({
 				success: true,
-				message: "Issue creation success",
-				data: createResult,
+				message: MSG.SUCCESS.ISSUE.CREATE,
+				data: null, // 굳이 객체를 안보내줘도 될듯?
 			});
+			//
 		} catch (e) {
 			next(e);
 		}

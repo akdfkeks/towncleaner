@@ -11,7 +11,7 @@ export function issueCreateReqValidator(req: Request) {
 			title: !body.issue.title && config.isDev ? "" : body.issue.title,
 			class: !body.issue.class && config.isDev ? "" : body.issue.class,
 			body: !body.issue.body && config.isDev ? "" : body.issue.body,
-			location: !body.issue.location && config.isDev ? "" : body,
+			user_loc: !body.issue.location && config.isDev ? "" : body,
 		},
 	};
 }
