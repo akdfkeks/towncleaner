@@ -8,6 +8,7 @@ export const MSG = {
 			CREATE: "Issue creation success",
 			LOOKUP: "Issue information search success",
 			LOOKUP_LIST: "Issue list search success",
+			SOLVE: "Issue solve request sent success",
 		},
 	},
 	FAILURE: {
@@ -17,5 +18,9 @@ export const MSG = {
 			LOOKUP_LIST: "Issue list search failed",
 		},
 	},
-	ERROR: {},
+	ERROR: {
+		AUTH: {
+			UN_AUTHORIZATION: "Unauthorization : ",
+		},
+	},
 };

@@ -31,6 +31,10 @@ class ImageService {
 			};
 		} catch (e) {}
 	}
+
+	public async saveImageInfoToLocal() {
+		return { savedImage: null };
+	}
 }
 
 export default ImageService;

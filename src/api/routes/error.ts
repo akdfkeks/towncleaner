@@ -1,4 +1,6 @@
+import { log } from "console";
 import { Request, Response, NextFunction, Application, Router } from "express";
+import { MSG } from "../../config/message";
 
 export default (app: Router) => {
 	app.use((req, res, next) => {
@@ -13,12 +15,16 @@ export default (app: Router) => {
 		 * Handle 401 thrown by express-jwt library
 		 */
 		if (err.name === "UnauthorizedError") {
-			return res.status(err.status).json({ success: false, message: err.message });
+			return res
+				.status(err.status)
+				.json({ success: false, message: MSG.ERROR.AUTH.UN_AUTHORIZATION });
 		}
 		return next(err);
 	});
+
 	app.use((err, req, res, next) => {
 		res.status(err.status || 500);
+		log(err);
 		res.json({
 			success: false,
 			errors: {

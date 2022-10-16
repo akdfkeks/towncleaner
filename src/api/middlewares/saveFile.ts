@@ -10,7 +10,7 @@ try {
 	fs.mkdirSync("uploads");
 }
 
-const saveFileToLocal = multer({
+export const saveFileToLocal = multer({
 	storage: multer.diskStorage({
 		destination: function (req, file, cb) {
 			cb(null, "uploads/");
@@ -29,6 +29,7 @@ const saveFileToS3 = multer({});
 export function saveFile(req: Request, res: Response, next: NextFunction) {
 	saveFileToLocal.single("image")(req, res, next);
 	//saveFileToS3.single("image")(req, res, next);
+	console.log(req.file);
 	next();
 }
 // export const uploadFileToS3; <- multer-s3 사용하기

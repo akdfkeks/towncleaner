@@ -1,4 +1,4 @@
-import { RequestUser } from "../../interface/Auth";
+import { UserAuthInfo } from "../../interface/IssueTemp";
 import { IssueContent } from "../../interface/Issue";
 import { LatLng } from "../../interface/Issue";
 
@@ -12,7 +12,7 @@ declare global {
 		}
 
 		export interface Request {
-			reqUser?: RequestUser;
+			reqUser?: UserAuthInfo;
 		}
 	}
 }
