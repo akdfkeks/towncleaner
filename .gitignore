@@ -9,3 +9,5 @@ build
 *.sql
 test
 uploads
+dbml
+package-lock.json
