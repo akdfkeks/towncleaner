@@ -23,6 +23,6 @@ export interface ResponseMessage {
 	data: any;
 }
 
-export interface RequestUser {
+export interface UserAuthInfo {
 	id: string;
 }

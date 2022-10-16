@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import IssueService from "../../../service/IssueService";
-import ImageService from "../../../service/ImageService";
 import Container from "typedi";
-import { IssueCreateReq, IssueListReq } from "../../../interface/Issue";
+import { IssueCreateReq, IssueSolveReq } from "../../../interface/IssueTemp";
+import { IssueListReq } from "../../../interface/IssueTemp";
 import config from "../../../config";
 import { MSG } from "../../../config/message";
+import { Decimal } from "@prisma/client/runtime";
 
 export default {
-	async fixedPoint(req: Request, res: Response) {
+	async devIssueList(req: Request, res: Response) {
 		const IssueServiceInstance = Container.get(IssueService);
 		const { data } = await IssueServiceInstance.getFixedPointIssues();
 
@@ -18,10 +19,10 @@ export default {
 		});
 	},
 
-	async userBound(req: Request, res: Response, next: NextFunction) {
+	async issueList(req: Request, res: Response, next: NextFunction) {
 		// ------------------------isDev------------------------
 		if (config.isDev) {
-			req.reqUser = { id: "test1" };
+			req.reqUser = { id: "test1", name: "dev" };
 			req.body.bound.ne = {
 				lat: 37.47297777482192,
 				lng: 127.14582172878094,
@@ -34,15 +35,15 @@ export default {
 		// ------------------------isDev------------------------
 
 		const userBoundIssusesReq: IssueListReq = {
-			user: { id: req.reqUser.id },
+			user: { id: req.reqUser.id, name: null },
 			bound: {
 				sw: {
-					lat: Number(req.body.user.southWest.lat),
-					lng: Number(req.body.user.southWest.lng),
+					lat: new Decimal(req.body.user.southWest.lat),
+					lng: new Decimal(req.body.user.southWest.lng),
 				},
 				ne: {
-					lat: Number(req.body.user.northEast.lat),
-					lng: Number(req.body.user.northEast.lng),
+					lat: new Decimal(req.body.user.northEast.lat),
+					lng: new Decimal(req.body.user.northEast.lng),
 				},
 			},
 		};
@@ -82,24 +83,30 @@ export default {
 	},
 
 	async createIssue(req: Request, res: Response, next: NextFunction) {
-		// Image 는 multer 가 로컬에 저장함
-		const issueCreateReq: IssueCreateReq = {
-			user: req.reqUser,
-			issue: {
-				title: req.body.title,
-				class: parseInt(req.body.class),
-				body: req.body.body,
-				user_loc: {
-					lat: req.body.lat,
-					lng: req.body.lng,
-				},
-			},
-			fileName: req.file.filename,
-		};
-
 		try {
+			const issueCreateReq: IssueCreateReq = {
+				user: req.reqUser,
+				issue: {
+					title: req.body.title,
+					class: parseInt(req.body.class),
+					body: req.body.body,
+					issueLoc: null,
+					reportingLoc: {
+						lat: new Decimal(req.body.lat),
+						lng: new Decimal(req.body.lng),
+					},
+				},
+				image: {
+					originName: req.file.originalname,
+					fileName: req.file.filename,
+					class: null,
+					location: null,
+					src: null,
+					createdAt: null,
+				},
+			};
+
 			const IssueServiceInstance = Container.get(IssueService);
-			const ImageServiceInstance = Container.get(ImageService);
 			const { createdIssue } = await IssueServiceInstance.createIssue(issueCreateReq);
 
 			if (!createdIssue) throw new Error(MSG.FAILURE.ISSUE.CREATE);
@@ -115,5 +122,21 @@ export default {
 		}
 	},
 
-	async solveIssue(req: Request, res: Response) {},
+	async solveIssue(req: Request, res: Response) {
+		try {
+			// const issueSolveReq: IssueSolveReq = {
+			// 	user: req.reqUser,
+			// 	body: req.body.body,
+			// 	image: {
+			// 		originName: req.file.originalname,
+			// 		fileName: req.file.filename,
+			// 	},
+			// };
+
+			// const IssueServiceInstance = Container.get(IssueService);
+			// const { issueSolveResult } = await IssueServiceInstance.solveIssue(issueSolveReq);
+
+			res.status(200).json({ success: true, message: MSG.SUCCESS.ISSUE.SOLVE, data: null });
+		} catch (e) {}
+	},
 };

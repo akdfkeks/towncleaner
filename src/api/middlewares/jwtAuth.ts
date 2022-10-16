@@ -23,7 +23,7 @@ export function jwtAuth(req: LoginRequestBody, res: Response, next: NextFunction
 // ------------------------isDev------------------------
 export const devAuth = (req: Request, res: Response, next: NextFunction) => {
 	if (config.isDev) {
-		req.reqUser = { id: "test1" };
+		req.reqUser = { id: "test1", name: "dev" };
 	}
 	next();
 };
