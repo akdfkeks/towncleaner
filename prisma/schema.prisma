@@ -2,6 +2,10 @@ generator client {
     provider = "prisma-client-js"
 }
 
+generator dbml {
+    provider = "prisma-dbml-generator"
+}
+
 datasource db {
     provider = "mysql"
     url      = env("DATABASE_URL")
@@ -15,11 +19,12 @@ model User {
     created_at DateTime  @default(now()) @db.DateTime(0)
     broom      Int       @default(0) @db.UnsignedInt
     Issue      Issue[]
+    Post       Post[]
 }
 
 model Issue {
     id         Int         @id @default(autoincrement()) @db.UnsignedInt
-    user       User        @relation(fields: [user_id], references: [id])
+    user       User?       @relation(fields: [user_id], references: [id])
     user_id    String      @db.VarChar(20)
     activated  Boolean     @default(true)
     solved     Boolean     @default(false)
@@ -34,7 +39,7 @@ model Issue {
 
 model Detected_obj {
     id       Int           @id @default(autoincrement()) @db.UnsignedInt
-    img      Issue_img     @relation(fields: [img_id], references: [id])
+    img      Issue_img?    @relation(fields: [img_id], references: [id])
     img_id   Int           @db.UnsignedInt
     class    Object_class? @relation(fields: [class_id], references: [id])
     class_id Int?          @db.UnsignedInt
@@ -44,7 +49,7 @@ model Detected_obj {
 model Issue_img {
     id           Int            @id @default(autoincrement()) @db.UnsignedInt
     issue        Issue?         @relation(fields: [issue_id], references: [id])
-    issue_id     Int?           @db.UnsignedInt
+    issue_id     Int            @db.UnsignedInt
     org_name     String         @db.VarChar(255)
     src          String?        @db.VarChar(255)
     uploaded_at  DateTime       @default(now()) @db.DateTime(0)
@@ -52,6 +57,25 @@ model Issue_img {
     lat          Decimal        @default(0.00000000000000) @db.Decimal(16, 14)
     lng          Decimal        @default(0.00000000000000) @db.Decimal(17, 14)
     Detected_obj Detected_obj[]
+}
+
+model Post_img {
+    id      Int   @id @default(autoincrement()) @db.UnsignedInt
+    post    Post? @relation(fields: [post_id], references: [id])
+    post_id Int   @db.UnsignedInt
+}
+
+model Post {
+    id        Int        @id @default(autoincrement()) @db.UnsignedInt
+    user      User?      @relation(fields: [user_id], references: [id])
+    user_id   String     @db.VarChar(20)
+    title     String
+    category  Category   @default(none)
+    body      String?    @db.Text
+    price     Int?       @db.UnsignedInt
+    activated Boolean    @default(true)
+    solved    Boolean    @default(false)
+    Post_img  Post_img[]
 }
 
 model Object_class {
@@ -64,4 +88,10 @@ enum User_role {
     user
     admin
     test
+}
+
+enum Category {
+    none
+    quest
+    deal
 }
