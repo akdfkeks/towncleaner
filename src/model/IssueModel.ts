@@ -1,6 +1,7 @@
 import prisma from "../config/prisma";
 import Container from "typedi";
-import { IssueCreateReq, Bound } from "../interface/Issue";
+import { IssueCreateReq, Bound } from "../interface/IssueTemp";
+import config from "../config";
 
 class IssueModel {
 	constructor() {}
@@ -9,16 +10,17 @@ class IssueModel {
 		const userBoundIssueList = await prisma.issue.findMany({
 			where: {
 				user_lat: {
-					lte: Number(userBound.ne.lat), // max
-					gte: Number(userBound.sw.lat), // min
+					lte: userBound.ne.lat, // max
+					gte: userBound.sw.lat, // min
 				},
 				user_lng: {
-					lte: Number(userBound.ne.lng), // max
-					gte: Number(userBound.sw.lng), // min
+					lte: userBound.ne.lng, // max
+					gte: userBound.sw.lng, // min
 				},
 				activated: true,
 				solved: false,
 			},
+
 			select: {
 				id: true,
 				user_id: true,
@@ -29,6 +31,7 @@ class IssueModel {
 				created_at: true,
 				user_lat: true,
 				user_lng: true,
+				Issue_img: true,
 			},
 		});
 
@@ -38,25 +41,32 @@ class IssueModel {
 	}
 
 	async createIssue(issueRequest: IssueCreateReq) {
-		const user = await prisma.user.findUnique({
-			where: { id: issueRequest.user.id },
-			select: { id: true },
-		});
+		const { user, issue, image } = issueRequest;
 		const creationResult = await prisma.issue.create({
 			data: {
 				user: {
-					connect: {
-						id: user.id,
+					connect: { id: user.id },
+				},
+				activated: config.isDev,
+				title: issue.title,
+				class: issue.class,
+				body: issueRequest.issue.body,
+				user_lat: issue.reportingLoc.lat,
+				user_lng: issue.reportingLoc.lng,
+				Issue_img: {
+					create: {
+						org_name: image.originName,
+						lat: image.location.lat,
+						lng: image.location.lng,
 					},
 				},
-				title: issueRequest.issue.title,
-				class: issueRequest.issue.class,
-				body: issueRequest.issue.body,
-				user_lat: Number(issueRequest.issue.user_loc.lat),
-				user_lng: Number(issueRequest.issue.user_loc.lng),
 				// activated: false,
 			},
+			include: {
+				Issue_img: { select: { id: true } },
+			},
 		});
+
 		return creationResult;
 	}
 
