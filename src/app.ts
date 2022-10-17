@@ -9,9 +9,9 @@ import http from "http";
 import path from "path";
 
 const options = {
-	ca: fs.readFileSync(path.join("../../letsencrypt/live/valun.kro.kr/fullchain.pem")),
-	key: fs.readFileSync(path.join("../../letsencrypt/live/valun.kro.kr/privkey.pem")),
-	cert: fs.readFileSync(path.join("../../letsencrypt/live/valun.kro.kr/cert.pem")),
+	ca: fs.readFileSync(path.join("/home/ubuntu/letsencrypt/live/valun.kro.kr/fullchain.pem")),
+	key: fs.readFileSync(path.join("/home/ubuntu/letsencrypt/live/valun.kro.kr/privkey.pem")),
+	cert: fs.readFileSync(path.join("/home/ubuntu/letsencrypt/live/valun.kro.kr/cert.pem")),
 };
 
 async function createServer() {
