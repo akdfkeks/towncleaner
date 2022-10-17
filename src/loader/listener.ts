@@ -1,5 +1,5 @@
 import EventEmitter from "eventemitter3";
-import { uploadImageToS3 } from "src/function/imageUploader";
+import { uploadImageToS3 } from "../function/imageUploader";
 
 export const eventEmitter = new EventEmitter();
 

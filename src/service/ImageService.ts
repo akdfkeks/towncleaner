@@ -5,7 +5,7 @@ import AuthModel from "../model/AuthModel";
 import fs from "fs";
 import config from "../config/index";
 import storage from "../config/s3Config";
-import { ImageFile } from "src/interface/AWS";
+import { ImageFile } from "../interface/AWS";
 
 @Service()
 class ImageService {
