@@ -1,7 +1,8 @@
 import prisma from "../config/prisma";
 import { LoginRequest, SignUpRequest } from "../interface/Auth";
-import Container from "typedi";
+import Container, { Service } from "typedi";
 
+@Service()
 class AuthModel {
 	constructor() {}
 

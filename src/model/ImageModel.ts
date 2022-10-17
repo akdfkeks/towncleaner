@@ -1,5 +1,5 @@
 import prisma from "../config/prisma";
-import Container from "typedi";
+import Container, { Service } from "typedi";
 import { IssueImageInfo } from "../interface/IssueTemp";
 import fs from "fs";
 import storage from "../config/s3Config";
@@ -7,6 +7,7 @@ import config from "../config";
 import { log } from "console";
 import path from "path";
 
+@Service()
 class ImageModel {
 	constructor() {}
 
