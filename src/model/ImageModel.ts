@@ -7,7 +7,6 @@ import config from "../config";
 import { log } from "console";
 import path from "path";
 
-@Service()
 class ImageModel {
 	constructor() {}
 
@@ -32,7 +31,5 @@ class ImageModel {
 		}
 	}
 }
-
-Container.set("ImageModel", new ImageModel());
 
 export default ImageModel;

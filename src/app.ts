@@ -1,8 +1,6 @@
 import express from "express";
 import config from "./config";
-import router from "./api";
 import appLoader from "./loader";
-import "reflect-metadata";
 import fs from "fs";
 import https from "https";
 import http from "http";

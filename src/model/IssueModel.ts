@@ -3,7 +3,6 @@ import Container, { Service } from "typedi";
 import { IssueCreateReq, Bound } from "../interface/IssueTemp";
 import config from "../config";
 
-@Service()
 class IssueModel {
 	constructor() {}
 
@@ -69,7 +68,5 @@ class IssueModel {
 		});
 	}
 }
-
-Container.set("IssueModel", new IssueModel());
 
 export default IssueModel;

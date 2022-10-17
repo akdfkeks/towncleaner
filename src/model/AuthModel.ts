@@ -2,7 +2,6 @@ import prisma from "../config/prisma";
 import { LoginRequest, SignUpRequest } from "../interface/Auth";
 import Container, { Service } from "typedi";
 
-@Service()
 class AuthModel {
 	constructor() {}
 
@@ -36,7 +35,5 @@ class AuthModel {
 		return isExist;
 	}
 }
-
-Container.set("AuthModel", new AuthModel());
 
 export default AuthModel;
