@@ -7,6 +7,7 @@ import config from "../config";
 import { log } from "console";
 import path from "path";
 
+@Service()
 class ImageModel {
 	constructor() {}
 

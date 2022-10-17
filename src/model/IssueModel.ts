@@ -3,6 +3,7 @@ import Container, { Service } from "typedi";
 import { IssueCreateReq, Bound } from "../interface/IssueTemp";
 import config from "../config";
 
+@Service()
 class IssueModel {
 	constructor() {}
 
