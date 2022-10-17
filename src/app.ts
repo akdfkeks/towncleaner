@@ -6,11 +6,12 @@ import "reflect-metadata";
 import fs from "fs";
 import https from "https";
 import http from "http";
+import path from "path";
 
 const options = {
-	ca: fs.readFileSync("../../letsencrypt/live/valun.kro.kr/fullchain.pem"),
-	key: fs.readFileSync("../../letsencrypt/live/valun.kro.kr/privkey.pem"),
-	cert: fs.readFileSync("../../letsencrypt/live/valun.kro.kr/cert.pem"),
+	ca: fs.readFileSync(path.join("../../letsencrypt/live/valun.kro.kr/fullchain.pem")),
+	key: fs.readFileSync(path.join("../../letsencrypt/live/valun.kro.kr/privkey.pem")),
+	cert: fs.readFileSync(path.join("../../letsencrypt/live/valun.kro.kr/cert.pem")),
 };
 
 async function createServer() {
