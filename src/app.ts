@@ -8,9 +8,9 @@ import https from "https";
 import http from "http";
 
 const options = {
-	ca: fs.readFileSync("~/valun.kro.kr/fullchain.pem"),
-	key: fs.readFileSync("~/valun.kro.kr/privkey.pem"),
-	cert: fs.readFileSync("~/valun.kro.kr/cert.pem"),
+	ca: fs.readFileSync("../../letsencrypt/live/valun.kro.kr/fullchain.pem"),
+	key: fs.readFileSync("../../letsencrypt/live/valun.kro.kr/privkey.pem"),
+	cert: fs.readFileSync("../../letsencrypt/live/valun.kro.kr/cert.pem"),
 };
 
 async function createServer() {
