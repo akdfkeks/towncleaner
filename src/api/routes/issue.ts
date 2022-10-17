@@ -1,7 +1,7 @@
 import { Router } from "express";
 import issueController from "../../api/routes/controller/issueController";
 import { devAuth } from "../middlewares/jwtAuth";
-import { saveFile, saveFileToLocal } from "../middlewares/saveFile";
+import { saveFileToLocal } from "../middlewares/saveFile";
 
 const route = Router();
 
@@ -9,6 +9,7 @@ export default (app: Router) => {
 	app.use("/issue", route);
 
 	route.post("/create", devAuth, saveFileToLocal.single("image"), issueController.createIssue);
+	//route.post("/create", devAuth, saveFile, issueController.createIssue);
 
 	route.post("/:issueNo/solve", devAuth, issueController.solveIssue);
 

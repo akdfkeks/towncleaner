@@ -40,8 +40,9 @@ class IssueModel {
 		} else throw new Error("No issues found");
 	}
 
-	async createIssue(issueRequest: IssueCreateReq) {
+	async createIssueWithImageInfo(issueRequest: IssueCreateReq) {
 		const { user, issue, image } = issueRequest;
+
 		const creationResult = await prisma.issue.create({
 			data: {
 				user: {
@@ -53,17 +54,6 @@ class IssueModel {
 				body: issueRequest.issue.body,
 				user_lat: issue.reportingLoc.lat,
 				user_lng: issue.reportingLoc.lng,
-				Issue_img: {
-					create: {
-						org_name: image.originName,
-						lat: image.location.lat,
-						lng: image.location.lng,
-					},
-				},
-				// activated: false,
-			},
-			include: {
-				Issue_img: { select: { id: true } },
 			},
 		});
 

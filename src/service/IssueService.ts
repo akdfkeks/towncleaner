@@ -8,6 +8,9 @@ import { detectObject } from "../function/childWorker";
 import { getLatLngFromImage } from "../function/exifParser";
 import { log } from "console";
 import { Decimal } from "@prisma/client/runtime";
+import ImageModel from "../model/ImageModel";
+import EventEmitter from "eventemitter3";
+import { eventEmitter } from "../loader/listener";
 
 const fixedIssuePointList: IssueInfo[] = [
 	{
@@ -84,6 +87,12 @@ const fixedIssuePointList: IssueInfo[] = [
 class IssueService {
 	@Inject("IssueModel") private issueModel: IssueModel;
 	@Inject("AuthModel") private authModel: AuthModel;
+	@Inject("ImageModel") private imageModel: ImageModel;
+	private eventEmitter: EventEmitter;
+
+	constructor() {
+		this.eventEmitter = eventEmitter;
+	}
 
 	public async getFixedPointIssues() {
 		return { data: fixedIssuePointList };
@@ -125,20 +134,24 @@ class IssueService {
 	}
 
 	public async createIssue(issueReq: IssueCreateReq) {
-		// Get GPS from issue image
 		const { imageLat, imageLng } = getLatLngFromImage(issueReq.image.fileName);
-
 		issueReq.image.location = {
 			lat: imageLat,
 			lng: imageLng,
 		};
 
-		const issueCreationResult = await this.issueModel.createIssue(issueReq);
-		// log(issueCreationResult.Issue_img[0].id);
-
+		const issueCreationResult = await this.issueModel.createIssueWithImageInfo(issueReq);
 		if (!issueCreationResult) throw new Error("Issue creation failed");
 
-		// 여기서 이미지를 업로드
+		const imageUploadParams = {
+			issueId: issueCreationResult.id,
+			fileName: issueReq.image.fileName,
+			location: issueReq.image.location,
+		};
+
+		console.log("here");
+		// Upload Image by EventEmitter
+		this.eventEmitter.emit("uploadImageToS3", imageUploadParams);
 		/*
 		TODO: Child Process 생성하여 ai 모델에 전달 하는 비동기함수 하나 만들어서 
 		여기서 실행만 하기. 해당 함수 안에서는, 파일 이름을 통해서 .py 에 이미지 전달 후 
@@ -153,7 +166,7 @@ class IssueService {
 		// 	issueCreationResult.Issue_img[0].id
 		// );
 
-		return { createdIssue: issueCreationResult };
+		return { createdIssueResult: issueCreationResult };
 	}
 
 	public async solveIssue(issueReq: IssueSolveReq) {

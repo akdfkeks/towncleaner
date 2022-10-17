@@ -70,7 +70,7 @@ interface ImageInfo {
 	createdAt: Date | null;
 }
 
-interface LatLng {
+export interface LatLng {
 	lat: Decimal | null;
 	lng: Decimal | null;
 }

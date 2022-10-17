@@ -6,6 +6,7 @@ import { IssueListReq } from "../../../interface/IssueTemp";
 import config from "../../../config";
 import { MSG } from "../../../config/message";
 import { Decimal } from "@prisma/client/runtime";
+import { log } from "console";
 
 export default {
 	async devIssueList(req: Request, res: Response) {
@@ -83,6 +84,7 @@ export default {
 	},
 
 	async createIssue(req: Request, res: Response, next: NextFunction) {
+		log(req.file);
 		try {
 			const issueCreateReq: IssueCreateReq = {
 				user: req.reqUser,
@@ -107,16 +109,13 @@ export default {
 			};
 
 			const IssueServiceInstance = Container.get(IssueService);
-			const { createdIssue } = await IssueServiceInstance.createIssue(issueCreateReq);
-
-			if (!createdIssue) throw new Error(MSG.FAILURE.ISSUE.CREATE);
+			const { createdIssueResult } = await IssueServiceInstance.createIssue(issueCreateReq);
 
 			return res.status(200).json({
 				success: true,
 				message: MSG.SUCCESS.ISSUE.CREATE,
-				data: null, // 굳이 객체를 안보내줘도 될듯?
+				data: null,
 			});
-			//
 		} catch (e) {
 			next(e);
 		}

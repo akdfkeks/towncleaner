@@ -9,6 +9,7 @@ export default async ({ app }: { app: express.Application }) => {
 	app.use(express.urlencoded({ extended: false }));
 	app.use(express.json());
 	app.use(passport.initialize());
+	app.use(express.static("public"));
 
 	// Initialize routers
 	app.use(router());
