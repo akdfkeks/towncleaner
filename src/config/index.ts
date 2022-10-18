@@ -18,7 +18,7 @@ export default {
 	bucketName: process.env.BUCKET_NAME as string,
 
 	// letsencrypt cert key path
-	fullchain: process.env.FULLCAIN as string,
+	fullchain: process.env.FULLCHAIN as string,
 	privkey: process.env.PRIVKEY as string,
 	cert: process.env.CERT as string,
 
