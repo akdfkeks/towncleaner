@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import os from "os";
+
 import { options } from "./ssl";
 
 dotenv.config();
@@ -14,7 +14,6 @@ export default {
 
 	// isDev: process.env.NODE_ENV == "development",
 	isDev: true,
-	isProd: os.platform() == "darwin" ? false : true,
 
 	// Amazone S3 Bucket key
 	s3AccessKey: process.env.S3_ACCESS_KEY as string,
