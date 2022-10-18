@@ -1,7 +1,7 @@
 import { LoginRequest, SignUpRequest } from "../../../interface/Auth";
 import { Request, Response, NextFunction } from "express";
 import AuthService from "../../../service/AuthService";
-import Container from "typedi";
+import { Container } from "typedi";
 
 export default {
 	async login(req: Request, res: Response, next: NextFunction) {

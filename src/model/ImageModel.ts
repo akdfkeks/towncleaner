@@ -1,5 +1,5 @@
 import prisma from "../config/prisma";
-import Container, { Service } from "typedi";
+import { Service } from "typedi";
 import { IssueImageInfo } from "../interface/IssueTemp";
 import fs from "fs";
 import storage from "../config/s3Config";

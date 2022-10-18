@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import IssueService from "../../../service/IssueService";
-import Container from "typedi";
+import { Container } from "typedi";
 import { IssueCreateReq, IssueSolveReq } from "../../../interface/IssueTemp";
 import { IssueListReq } from "../../../interface/IssueTemp";
 import config from "../../../config";

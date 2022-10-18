@@ -1,5 +1,5 @@
 import prisma from "../config/prisma";
-import Container, { Service } from "typedi";
+import { Service } from "typedi";
 import { IssueCreateReq, Bound } from "../interface/IssueTemp";
 import config from "../config";
 

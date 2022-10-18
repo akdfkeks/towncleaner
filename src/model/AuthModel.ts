@@ -1,6 +1,6 @@
 import prisma from "../config/prisma";
 import { LoginRequest, SignUpRequest } from "../interface/Auth";
-import Container, { Service } from "typedi";
+import { Service } from "typedi";
 
 @Service()
 class AuthModel {
