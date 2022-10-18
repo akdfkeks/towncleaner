@@ -1,5 +1,5 @@
 import fs from "fs";
-import config from ".";
+import config from "./index";
 import https from "https";
 import os from "os";
 
