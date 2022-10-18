@@ -1,5 +1,3 @@
-import { options } from "./ssl";
-
 export default {
 	// Server
 	host: "localhost",
@@ -22,5 +20,4 @@ export default {
 	cert: process.env.CERT as string,
 
 	//https options object
-	httpsOptions: options,
 };

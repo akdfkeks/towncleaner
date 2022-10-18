@@ -4,7 +4,7 @@ import https from "https";
 import os from "os";
 const isProd = os.platform() == "darwin" ? false : true;
 
-export const options: https.ServerOptions | null = isProd
+export const httpsOptions: https.ServerOptions | null = isProd
 	? {
 			ca: fs.readFileSync(config.fullchain),
 			key: fs.readFileSync(config.privkey),

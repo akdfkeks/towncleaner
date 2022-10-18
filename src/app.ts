@@ -4,6 +4,7 @@ import appLoader from "./loader";
 import https from "https";
 import http from "http";
 import dotenv from "dotenv";
+import { httpsOptions } from "./config/ssl";
 
 async function createServer() {
 	dotenv.config();
@@ -17,7 +18,7 @@ async function createServer() {
 			console.log(`Server listening on http://${config.host}:${config.port}`);
 		});
 
-		https.createServer(config.httpsOptions, app).listen(443);
+		https.createServer(httpsOptions, app).listen(443);
 	} catch (err) {
 		console.log(err);
 	}
