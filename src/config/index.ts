@@ -1,8 +1,5 @@
-import dotenv from "dotenv";
-
 import { options } from "./ssl";
-
-dotenv.config();
+import "./dotenv";
 
 export default {
 	// Server
