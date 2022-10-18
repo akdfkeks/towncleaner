@@ -1,5 +1,4 @@
 import { options } from "./ssl";
-import "./dotenv";
 
 export default {
 	// Server

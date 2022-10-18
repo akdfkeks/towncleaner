@@ -3,8 +3,11 @@ import config from "./config";
 import appLoader from "./loader";
 import https from "https";
 import http from "http";
+import dotenv from "dotenv";
 
 async function createServer() {
+	dotenv.config();
+
 	const app = express();
 
 	await appLoader({ app });
