@@ -3,12 +3,9 @@ import config from "./config";
 import appLoader from "./loader";
 import https from "https";
 import http from "http";
-import dotenv from "dotenv";
 import { httpsOptions } from "./config/ssl";
 
 async function createServer() {
-	dotenv.config();
-
 	const app = express();
 
 	await appLoader({ app });
