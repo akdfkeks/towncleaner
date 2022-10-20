@@ -8,6 +8,11 @@ const route = Router();
 export default (app: Router) => {
 	app.use("/issue", route);
 
+	route.use(function (req, res, next) {
+		console.log(req.ip);
+		next();
+	});
+
 	route.post("/create", devAuth, saveFileToLocal.single("image"), issueController.createIssue);
 	//route.post("/create", devAuth, saveFile, issueController.createIssue);
 

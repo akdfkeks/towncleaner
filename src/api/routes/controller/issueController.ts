@@ -7,50 +7,53 @@ import config from "../../../config";
 import { MSG } from "../../../config/message";
 import { Decimal } from "@prisma/client/runtime";
 import { log } from "console";
+import { InvalidDataError } from "../../../error/Error";
 
 export default {
-	async devIssueList(req: Request, res: Response) {
-		const IssueServiceInstance = Container.get(IssueService);
-		const { data } = await IssueServiceInstance.getFixedPointIssues();
+	async devIssueList(req: Request, res: Response, next: NextFunction) {
+		try {
+			const IssueServiceInstance = Container.get(IssueService);
+			const { data } = await IssueServiceInstance.getFixedPointIssues();
 
-		res.status(200).json({
-			success: true,
-			message: "List of issues around the fixed point",
-			data: data,
-		});
+			res.status(200).json({
+				success: true,
+				message: "List of issues around the fixed point",
+				data: data,
+			});
+		} catch (err) {
+			return next(err);
+		}
 	},
 
 	async issueList(req: Request, res: Response, next: NextFunction) {
-		// ------------------------isDev------------------------
-		if (config.isDev) {
-			req.reqUser = { id: "test1", name: "dev" };
-			req.body.bound.ne = {
-				lat: 37.47297777482192,
-				lng: 127.14582172878094,
-			};
-			req.body.bound.sw = {
-				lat: 37.4455422196149,
-				lng: 127.12172046412597,
-			};
-		}
-		// ------------------------isDev------------------------
-
-		const userBoundIssusesReq: IssueListReq = {
-			user: { id: req.reqUser.id, name: null },
-			bound: {
-				sw: {
-					lat: new Decimal(req.body.user.southWest.lat),
-					lng: new Decimal(req.body.user.southWest.lng),
-				},
-				ne: {
-					lat: new Decimal(req.body.user.northEast.lat),
-					lng: new Decimal(req.body.user.northEast.lng),
-				},
-			},
-		};
-		// TODO : Object Validation
-
 		try {
+			// ------------------------isDev------------------------
+			if (config.isDev) {
+				req.reqUser = { id: "test1", name: "dev" };
+				req.body.bound.ne = {
+					lat: 37.47297777482192,
+					lng: 127.14582172878094,
+				};
+				req.body.bound.sw = {
+					lat: 37.4455422196149,
+					lng: 127.12172046412597,
+				};
+			}
+			// ------------------------isDev------------------------
+
+			const userBoundIssusesReq: IssueListReq = {
+				user: { id: req.reqUser.id, name: null },
+				bound: {
+					sw: {
+						lat: new Decimal(req.body.user.southWest.lat),
+						lng: new Decimal(req.body.user.southWest.lng),
+					},
+					ne: {
+						lat: new Decimal(req.body.user.northEast.lat),
+						lng: new Decimal(req.body.user.northEast.lng),
+					},
+				},
+			};
 			const IssueServiceInstance = Container.get(IssueService);
 			const { userPointIssueList } = await IssueServiceInstance.getUserPointIssueList(
 				userBoundIssusesReq
@@ -61,8 +64,8 @@ export default {
 				message: "User-point issue list",
 				data: userPointIssueList,
 			});
-		} catch (e) {
-			next(e);
+		} catch (err) {
+			return next(err);
 		}
 	},
 
@@ -78,13 +81,12 @@ export default {
 				message: MSG.SUCCESS.ISSUE.LOOKUP,
 				data: data, // TODO:
 			});
-		} catch (e) {
-			next(e);
+		} catch (err) {
+			return next(err);
 		}
 	},
 
 	async createIssue(req: Request, res: Response, next: NextFunction) {
-		log(req.file);
 		try {
 			const issueCreateReq: IssueCreateReq = {
 				user: req.reqUser,
@@ -116,12 +118,12 @@ export default {
 				message: MSG.SUCCESS.ISSUE.CREATE,
 				data: null,
 			});
-		} catch (e) {
-			next(e);
+		} catch (err) {
+			return next(err);
 		}
 	},
 
-	async solveIssue(req: Request, res: Response) {
+	async solveIssue(req: Request, res: Response, next: NextFunction) {
 		try {
 			// const issueSolveReq: IssueSolveReq = {
 			// 	user: req.reqUser,
@@ -136,6 +138,8 @@ export default {
 			// const { issueSolveResult } = await IssueServiceInstance.solveIssue(issueSolveReq);
 
 			res.status(200).json({ success: true, message: MSG.SUCCESS.ISSUE.SOLVE, data: null });
-		} catch (e) {}
+		} catch (err) {
+			return next(err);
+		}
 	},
 };

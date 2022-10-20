@@ -2,6 +2,7 @@ import { ExifParserFactory } from "ts-exif-parser";
 import fs from "fs";
 import { log } from "console";
 import { Decimal } from "@prisma/client/runtime";
+import { IssueImageExifError } from "../error/Error";
 
 export function getLatLngFromImage(fileName: string) {
 	try {
@@ -10,8 +11,7 @@ export function getLatLngFromImage(fileName: string) {
 		} = ExifParserFactory.create(fs.readFileSync(`uploads/${fileName}`)).parse();
 
 		return { imageLat: new Decimal(GPSLatitude), imageLng: new Decimal(GPSLongitude) };
-	} catch (e) {
-		log(e);
-		throw new Error(e.message);
+	} catch (err) {
+		throw new Error(err);
 	}
 }

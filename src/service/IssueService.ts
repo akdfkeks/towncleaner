@@ -6,11 +6,11 @@ import IssueModel from "../model/IssueModel";
 import AuthModel from "../model/AuthModel";
 import { detectObject } from "../function/childWorker";
 import { getLatLngFromImage } from "../function/exifParser";
-import { log } from "console";
 import { Decimal } from "@prisma/client/runtime";
 import ImageModel from "../model/ImageModel";
 import EventEmitter from "eventemitter3";
 import { eventEmitter } from "../loader/listener";
+import { errorFactory } from "../function/errorTypeChecker";
 
 const fixedIssuePointList: IssueInfo[] = [
 	{
@@ -99,82 +99,95 @@ class IssueService {
 	}
 
 	public async getUserPointIssueList(issueListReq: IssueListReq) {
-		const { user, bound } = issueListReq;
+		try {
+			const { user, bound } = issueListReq;
 
-		// 여기 변수명 헷갈리니까 수정하기.
-		const userBoundIssueList = await this.issueModel.getIssueListByUserBound(bound);
-		const userPointIssueList = userBoundIssueList.map((issue) => {
-			const element: IssueInfo = {
-				issueId: issue.id,
-				issuer: issue.user_id,
-				title: issue.title,
-				class: issue.class,
-				body: issue.body,
-				createdAt: issue.created_at,
-				issueLoc: {
-					lat: issue.Issue_img[0].lat,
-					lng: issue.Issue_img[0].lng,
-				},
-				reportingLoc: {
-					lat: issue.user_lat,
-					lng: issue.user_lng,
-				},
-				imgUrl: issue.Issue_img[0].src,
-			};
-			return element;
-		});
-
-		// 임시로 fixedIssuePointList 반환
-		return { userPointIssueList: fixedIssuePointList };
+			// 여기 변수명 헷갈리니까 수정하기.
+			const userBoundIssueList = await this.issueModel.getIssueListByUserBound(bound);
+			const userPointIssueList = userBoundIssueList.map((issue) => {
+				const element: IssueInfo = {
+					issueId: issue.id,
+					issuer: issue.user_id,
+					title: issue.title,
+					class: issue.class,
+					body: issue.body,
+					createdAt: issue.created_at,
+					issueLoc: {
+						lat: issue.Issue_img[0].lat,
+						lng: issue.Issue_img[0].lng,
+					},
+					reportingLoc: {
+						lat: issue.user_lat,
+						lng: issue.user_lng,
+					},
+					imgUrl: issue.Issue_img[0].src,
+				};
+				return element;
+			});
+			// 임시로 fixedIssuePointList 반환
+			return { userPointIssueList: fixedIssuePointList };
+		} catch (err) {
+			throw errorFactory(err);
+		}
 	}
 
 	public async getIssueInfo(issueId: number) {
-		const data = await this.issueModel.getIssueInfo(issueId);
-		return { data };
+		try {
+			const data = await this.issueModel.getIssueInfo(issueId);
+			return { data };
+		} catch (err) {
+			throw errorFactory(err);
+		}
 	}
 
 	public async createIssue(issueReq: IssueCreateReq) {
-		const { imageLat, imageLng } = getLatLngFromImage(issueReq.image.fileName);
-		issueReq.image.location = {
-			lat: imageLat,
-			lng: imageLng,
-		};
+		try {
+			const { imageLat, imageLng } = getLatLngFromImage(issueReq.image.fileName);
+			issueReq.image.location = {
+				lat: imageLat,
+				lng: imageLng,
+			};
 
-		const issueCreationResult = await this.issueModel.createIssueWithImageInfo(issueReq);
-		if (!issueCreationResult) throw new Error("Issue creation failed");
+			const issueCreationResult = await this.issueModel.createIssueWithImageInfo(issueReq);
+			if (!issueCreationResult) throw new Error("Issue creation failed");
 
-		const imageUploadParams = {
-			issueId: issueCreationResult.id,
-			fileName: issueReq.image.fileName,
-			location: issueReq.image.location,
-		};
+			const imageUploadParams = {
+				issueId: issueCreationResult.id,
+				fileName: issueReq.image.fileName,
+				location: issueReq.image.location,
+			};
 
-		console.log("here");
-		// Upload Image by EventEmitter
-		this.eventEmitter.emit("uploadImageToS3", imageUploadParams);
-		/*
-		TODO: Child Process 생성하여 ai 모델에 전달 하는 비동기함수 하나 만들어서 
-		여기서 실행만 하기. 해당 함수 안에서는, 파일 이름을 통해서 .py 에 이미지 전달 후 
-		결과가 나오면 DB 에 분류 결과 저장
-		*/
-		// 그냥 서버 시작 시 Thread 하나 생성 후 이벤트로 처리할까?
-		// ex) .emit("eventName", data)
+			this.eventEmitter.emit("uploadImageToS3", imageUploadParams);
 
-		// detectObject(
-		// 	issueReq.image.fileName,
-		// 	issueCreationResult.id,
-		// 	issueCreationResult.Issue_img[0].id
-		// );
-
-		return { createdIssueResult: issueCreationResult };
+			return { createdIssueResult: issueCreationResult };
+			/*
+			TODO: Child Process 생성하여 ai 모델에 전달 하는 비동기함수 하나 만들어서 
+			여기서 실행만 하기. 해당 함수 안에서는, 파일 이름을 통해서 .py 에 이미지 전달 후 
+			결과가 나오면 DB 에 분류 결과 저장
+			
+			그냥 서버 시작 시 Thread 하나 생성 후 이벤트로 처리할까?
+			ex) .emit("eventName", data)
+			
+			detectObject(
+				issueReq.image.fileName,
+				issueCreationResult.id,
+				issueCreationResult.Issue_img[0].id
+		);*/
+		} catch (err) {
+			throw errorFactory(err);
+		}
 	}
 
 	public async solveIssue(issueReq: IssueSolveReq) {
-		const { imageLat, imageLng } = getLatLngFromImage(issueReq.image.fileName);
+		try {
+			const { imageLat, imageLng } = getLatLngFromImage(issueReq.image.fileName);
 
-		//
+			//
 
-		return { issueSolveResult: null };
+			return { issueSolveResult: null };
+		} catch (err) {
+			throw errorFactory(err);
+		}
 	}
 
 	// private getBoundSize(userData: UserBound) {
