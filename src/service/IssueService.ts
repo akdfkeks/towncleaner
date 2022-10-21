@@ -123,7 +123,7 @@ class IssueService {
 				};
 				return element;
 			});
-			console.log(issueList);
+			// console.log(issueList);
 			// ------------------------forDev------------------------
 			// 임시로 fixedIssuePointList 같이 반환
 			issueList.push(...fixedIssuePointList);
