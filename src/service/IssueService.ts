@@ -87,7 +87,6 @@ const fixedIssuePointList: IssueInfo[] = [
 class IssueService {
 	@Inject("IssueModel") private issueModel: IssueModel;
 	@Inject("AuthModel") private authModel: AuthModel;
-	@Inject("ImageModel") private imageModel: ImageModel;
 	private eventEmitter: EventEmitter;
 
 	constructor() {
@@ -104,7 +103,7 @@ class IssueService {
 
 			// 여기 변수명 헷갈리니까 수정하기.
 			const userBoundIssueList = await this.issueModel.getIssueListByUserBound(bound);
-			const userPointIssueList = userBoundIssueList.map((issue) => {
+			const issueList = userBoundIssueList.map((issue) => {
 				const element: IssueInfo = {
 					issueId: issue.id,
 					issuer: issue.user_id,
@@ -124,8 +123,12 @@ class IssueService {
 				};
 				return element;
 			});
-			// 임시로 fixedIssuePointList 반환
-			return { userPointIssueList: fixedIssuePointList };
+			// ------------------------forDev------------------------
+			// 임시로 fixedIssuePointList 같이 반환
+			issueList.push(...fixedIssuePointList);
+			// ------------------------forDev------------------------
+
+			return { userPointIssueList: issueList };
 		} catch (err) {
 			throw errorFactory(err);
 		}
@@ -157,22 +160,9 @@ class IssueService {
 				location: issueReq.image.location,
 			};
 
-			this.eventEmitter.emit("uploadImageToS3", imageUploadParams);
+			this.eventEmitter.emit("processImage", imageUploadParams);
 
 			return { createdIssueResult: issueCreationResult };
-			/*
-			TODO: Child Process 생성하여 ai 모델에 전달 하는 비동기함수 하나 만들어서 
-			여기서 실행만 하기. 해당 함수 안에서는, 파일 이름을 통해서 .py 에 이미지 전달 후 
-			결과가 나오면 DB 에 분류 결과 저장
-			
-			그냥 서버 시작 시 Thread 하나 생성 후 이벤트로 처리할까?
-			ex) .emit("eventName", data)
-			
-			detectObject(
-				issueReq.image.fileName,
-				issueCreationResult.id,
-				issueCreationResult.Issue_img[0].id
-		);*/
 		} catch (err) {
 			throw errorFactory(err);
 		}
