@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import IssueService from "../../../service/IssueService";
 import { Container } from "typedi";
-import { IssueCreateReq, IssueSolveReq } from "../../../interface/IssueTemp";
+import { IssueCreateReq, IssueInfo, IssueSolveReq } from "../../../interface/IssueTemp";
 import { IssueListReq } from "../../../interface/IssueTemp";
 import config from "../../../config";
 import { MSG } from "../../../config/message";
@@ -30,14 +30,6 @@ export default {
 			// ------------------------isDev------------------------
 			if (config.isDev) {
 				req.reqUser = { id: "test1", name: "dev" };
-				req.body.bound.ne = {
-					lat: 37.47297777482192,
-					lng: 127.14582172878094,
-				};
-				req.body.bound.sw = {
-					lat: 37.4455422196149,
-					lng: 127.12172046412597,
-				};
 			}
 			// ------------------------isDev------------------------
 
@@ -54,15 +46,16 @@ export default {
 					},
 				},
 			};
+			// console.log(userBoundIssusesReq.bound);
 			const IssueServiceInstance = Container.get(IssueService);
-			const { userPointIssueList } = await IssueServiceInstance.getUserPointIssueList(
+			const { issueList } = await IssueServiceInstance.getUserPointIssueList(
 				userBoundIssusesReq
 			);
 
 			res.status(200).json({
 				success: true,
 				message: "User-point issue list",
-				data: userPointIssueList,
+				data: issueList,
 			});
 		} catch (err) {
 			return next(err);

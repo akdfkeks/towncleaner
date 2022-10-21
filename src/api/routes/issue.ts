@@ -9,7 +9,7 @@ export default (app: Router) => {
 	app.use("/issue", route);
 
 	route.use(function (req, res, next) {
-		console.log(req.ip);
+		//console.log(req.ip);
 		next();
 	});
 

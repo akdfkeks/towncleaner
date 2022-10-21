@@ -36,9 +36,7 @@ class IssueModel {
 			},
 		});
 
-		if (userBoundIssueList) {
-			return userBoundIssueList;
-		} else throw new Error("No issues found");
+		return userBoundIssueList;
 	}
 
 	async createIssueWithImageInfo(issueRequest: IssueCreateReq) {

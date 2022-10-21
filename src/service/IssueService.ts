@@ -100,7 +100,7 @@ class IssueService {
 	public async getUserPointIssueList(issueListReq: IssueListReq) {
 		try {
 			const { user, bound } = issueListReq;
-
+			if (Number(bound.sw.lat) > 128 || bound.sw.lat == null) return { issueList: null };
 			// 여기 변수명 헷갈리니까 수정하기.
 			const userBoundIssueList = await this.issueModel.getIssueListByUserBound(bound);
 			const issueList = userBoundIssueList.map((issue) => {
@@ -112,23 +112,24 @@ class IssueService {
 					body: issue.body,
 					createdAt: issue.created_at,
 					issueLoc: {
-						lat: issue.Issue_img[0].lat,
-						lng: issue.Issue_img[0].lng,
+						lat: issue.Issue_img[0].lat || null,
+						lng: issue.Issue_img[0].lng || null,
 					},
 					reportingLoc: {
-						lat: issue.user_lat,
-						lng: issue.user_lng,
+						lat: issue.user_lat || null,
+						lng: issue.user_lng || null,
 					},
-					imgUrl: issue.Issue_img[0].src,
+					imgUrl: issue.Issue_img[0].src || null,
 				};
 				return element;
 			});
+			console.log(issueList);
 			// ------------------------forDev------------------------
 			// 임시로 fixedIssuePointList 같이 반환
 			issueList.push(...fixedIssuePointList);
 			// ------------------------forDev------------------------
 
-			return { userPointIssueList: issueList };
+			return { issueList };
 		} catch (err) {
 			throw errorFactory(err);
 		}
@@ -146,6 +147,8 @@ class IssueService {
 	public async createIssue(issueReq: IssueCreateReq) {
 		try {
 			const { imageLat, imageLng } = getLatLngFromImage(issueReq.image.fileName);
+			if (!imageLat || !imageLng) throw new Error("No imamge latlng");
+
 			issueReq.image.location = {
 				lat: imageLat,
 				lng: imageLng,
