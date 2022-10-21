@@ -10,14 +10,14 @@ class IssueModel {
 	async getIssueListByUserBound(userBound: Bound) {
 		const userBoundIssueList = await prisma.issue.findMany({
 			where: {
-				user_lat: {
-					lte: userBound.ne.lat, // max
-					gte: userBound.sw.lat, // min
-				},
-				user_lng: {
-					lte: userBound.ne.lng, // max
-					gte: userBound.sw.lng, // min
-				},
+				// user_lat: {
+				// 	lte: userBound.ne.lat, // max
+				// 	gte: userBound.sw.lat, // min
+				// },
+				// user_lng: {
+				// 	lte: userBound.ne.lng, // max
+				// 	gte: userBound.sw.lng, // min
+				// },
 				activated: true,
 				solved: false,
 			},
