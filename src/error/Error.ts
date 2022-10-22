@@ -6,6 +6,16 @@ export abstract class AbstractExpectedError extends Error {
 	}
 }
 
+export class UnExpectedError extends Error {
+	code: string;
+	constructor(...args: any) {
+		super(...args);
+		this.code = "0";
+		this.name = "UnExpectedError";
+		this.stack = `${this.message}\n${new Error().stack}`;
+	}
+}
+
 export class NotFoundError extends AbstractExpectedError {
 	constructor(...args: any) {
 		super(...args);
