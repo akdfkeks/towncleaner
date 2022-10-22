@@ -6,8 +6,6 @@ import { IssueListReq } from "../../../interface/IssueTemp";
 import config from "../../../config";
 import { MSG } from "../../../config/message";
 import { Decimal } from "@prisma/client/runtime";
-import { log } from "console";
-import { InvalidDataError } from "../../../error/Error";
 
 export default {
 	async devIssueList(req: Request, res: Response, next: NextFunction) {
