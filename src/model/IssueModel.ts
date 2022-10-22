@@ -18,7 +18,7 @@ class IssueModel {
 				// 	lte: userBound.ne.lng, // max
 				// 	gte: userBound.sw.lng, // min
 				// },
-				activated: true,
+				active: true,
 				solved: false,
 			},
 
@@ -47,7 +47,7 @@ class IssueModel {
 				user: {
 					connect: { id: user.id },
 				},
-				activated: config.isDev,
+				active: config.isDev,
 				title: issue.title,
 				class: issue.class,
 				body: issueRequest.issue.body,
