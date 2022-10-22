@@ -15,7 +15,7 @@ model User {
     id         String    @id @db.VarChar(20)
     pw         String    @db.VarChar(255)
     role       User_role @default(user)
-    activated  Boolean   @default(true)
+    active     Boolean   @default(true)
     created_at DateTime  @default(now()) @db.DateTime(0)
     broom      Int       @default(0) @db.UnsignedInt
     Issue      Issue[]
@@ -26,7 +26,7 @@ model Issue {
     id         Int         @id @default(autoincrement()) @db.UnsignedInt
     user       User?       @relation(fields: [user_id], references: [id])
     user_id    String      @db.VarChar(20)
-    activated  Boolean     @default(true)
+    active     Boolean     @default(true)
     solved     Boolean     @default(false)
     title      String?     @db.VarChar(50)
     class      Int?
@@ -66,16 +66,16 @@ model Post_img {
 }
 
 model Post {
-    id        Int        @id @default(autoincrement()) @db.UnsignedInt
-    user      User?      @relation(fields: [user_id], references: [id])
-    user_id   String     @db.VarChar(20)
-    title     String
-    category  Category   @default(none)
-    body      String?    @db.Text
-    price     Int?       @db.UnsignedInt
-    activated Boolean    @default(true)
-    solved    Boolean    @default(false)
-    Post_img  Post_img[]
+    id       Int        @id @default(autoincrement()) @db.UnsignedInt
+    user     User?      @relation(fields: [user_id], references: [id])
+    user_id  String     @db.VarChar(20)
+    title    String
+    category Category   @default(none)
+    body     String?    @db.Text
+    price    Int?       @db.UnsignedInt
+    active   Boolean    @default(true)
+    solved   Boolean    @default(false)
+    Post_img Post_img[]
 }
 
 model Object_class {
@@ -93,5 +93,5 @@ enum User_role {
 enum Category {
     none
     quest
-    deal
+    trade
 }
