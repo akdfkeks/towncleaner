@@ -12,6 +12,6 @@ export function getLatLngFromImage(fileName: string) {
 
 		return { imageLat: new Decimal(GPSLatitude), imageLng: new Decimal(GPSLongitude) };
 	} catch (err) {
-		throw new Error(err);
+		throw new IssueImageExifError(err);
 	}
 }
