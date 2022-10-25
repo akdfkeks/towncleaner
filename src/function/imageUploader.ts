@@ -17,7 +17,7 @@ export async function processImage(issueId: number, fileName: string, location: 
 		};
 		const uploadResult = await storage.upload(params).promise();
 		console.log(uploadResult);
-		const imageInfoCreateResult = await prisma.issue_img.create({
+		const imageInfoCreateResult = await prisma.issue_image.create({
 			data: {
 				issue: {
 					connect: { id: issueId },

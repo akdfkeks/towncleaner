@@ -42,7 +42,8 @@ class AuthService {
 		}
 
 		const payload = {
-			userId: userData.id,
+			id: userData.id,
+			name: userData.id,
 		};
 
 		const generatedToken = jwt.sign(payload, process.env.JWT_SECRET, {

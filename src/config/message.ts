@@ -17,6 +17,9 @@ export const MSG = {
 			LOOKUP: "Issue information search failed",
 			LOOKUP_LIST: "Issue list search failed",
 		},
+		IMAGE: {
+			PARSE: "Can't parse GPS from image'",
+		},
 	},
 	ERROR: {
 		AUTH: {

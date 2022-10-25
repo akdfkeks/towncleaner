@@ -6,6 +6,8 @@ export abstract class AbstractExpectedError extends Error {
 	}
 }
 
+abstract class AbstractAuthError extends AbstractExpectedError {}
+
 export class UnExpectedError extends Error {
 	code: string;
 	constructor(...args: any) {
@@ -40,7 +42,7 @@ export class AuthenticationError extends AbstractExpectedError {
 	constructor(...args: any) {
 		super(...args);
 		this.code = "1002";
-		this.name = "UnAuthenticationError";
+		this.name = "AuthenticationError";
 		this.stack = `${this.message}\n${new Error().stack}`;
 		this.statusCode = 401;
 	}
@@ -71,6 +73,16 @@ export class IssueImageExifError extends AbstractExpectedError {
 		super(...args);
 		this.code = "1005";
 		this.name = "IssueImageExifError";
+		this.stack = `${this.message}\n${new Error().stack}`;
+		this.statusCode = 500;
+	}
+}
+
+export class IssueCreateError extends AbstractExpectedError {
+	constructor(...args: any) {
+		super(...args);
+		this.code = "1006";
+		this.name = "IssueCreateError";
 		this.stack = `${this.message}\n${new Error().stack}`;
 		this.statusCode = 500;
 	}

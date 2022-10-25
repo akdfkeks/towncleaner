@@ -39,7 +39,7 @@ class IssueModel {
 		return userBoundIssueList;
 	}
 
-	async createIssueWithImageInfo(issueRequest: IssueCreateReq) {
+	async createIssue(issueRequest: IssueCreateReq) {
 		const { user, issue, image } = issueRequest;
 
 		const creationResult = await prisma.issue.create({

@@ -1,4 +1,4 @@
-import { IssueSolveReq } from "../interface/IssueTemp";
+import { IssueSolveReq, LatLng } from "../interface/IssueTemp";
 import { IssueListReq, IssueCreateReq } from "../interface/IssueTemp";
 import { IssueInfo } from "../interface/IssueTemp";
 import { Inject, Service } from "typedi";
@@ -9,6 +9,9 @@ import { Decimal } from "@prisma/client/runtime";
 import EventEmitter from "eventemitter3";
 import { eventEmitter } from "../loader/listener";
 import { errorFactory } from "../function/errorTypeChecker";
+import { IssueCreateError, IssueImageExifError } from "../error/Error";
+import { MSG } from "../config/message";
+import { Issue } from "@prisma/client";
 
 const fixedIssuePointList: IssueInfo[] = [
 	{
@@ -142,25 +145,24 @@ class IssueService {
 		}
 	}
 
-	public async createIssue(issueReq: IssueCreateReq) {
+	public async createIssue(issueReq: IssueCreateReq): Promise<{ createdIssueResult: Issue }> {
 		try {
-			const { imageLat, imageLng } = getLatLngFromImage(issueReq.image.fileName);
-			if (!imageLat || !imageLng) throw new Error("No imamge latlng");
+			// Extract GPS Data from Image
+			const { lat, lng }: LatLng = getLatLngFromImage(issueReq.image.fileName);
+			issueReq.image.location = { lat: lat, lng: lng };
 
-			issueReq.image.location = {
-				lat: imageLat,
-				lng: imageLng,
-			};
+			// Get issueCreation Result from Database
+			const issueCreationResult: Issue = await this.issueModel.createIssue(issueReq);
+			if (!issueCreationResult) throw new IssueCreateError(MSG.FAILURE.ISSUE.CREATE);
 
-			const issueCreationResult = await this.issueModel.createIssueWithImageInfo(issueReq);
-			if (!issueCreationResult) throw new Error("Issue creation failed");
-
+			// For Event listener
 			const imageUploadParams = {
 				issueId: issueCreationResult.id,
 				fileName: issueReq.image.fileName,
 				location: issueReq.image.location,
 			};
 
+			// Event trigger: Image uploading and create image record
 			this.eventEmitter.emit("processImage", imageUploadParams);
 
 			return { createdIssueResult: issueCreationResult };
@@ -171,7 +173,7 @@ class IssueService {
 
 	public async solveIssue(issueReq: IssueSolveReq) {
 		try {
-			const { imageLat, imageLng } = getLatLngFromImage(issueReq.image.fileName);
+			const { lat, lng } = getLatLngFromImage(issueReq.image.fileName);
 
 			//
 

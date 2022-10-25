@@ -13,11 +13,10 @@ export default (app: Router) => {
 	app.use((err, req, res: Response, next: NextFunction) => {
 		if (err instanceof AbstractExpectedError) {
 			const { message, statusCode, code } = err;
-			console.log(err);
-			res.status(statusCode || 500).json({ message, code });
+			res.status(statusCode || 500).json({ message, code, success: false });
 		} else {
 			console.log(err);
-			res.status(500).json({ message: "Internal server error" });
+			res.status(500).json({ success: false, message: "Internal server error" });
 		}
 	});
 	return app;
