@@ -113,15 +113,16 @@ class IssueService {
 					body: issue.body,
 					createdAt: issue.created_at,
 					issueLoc: {
-						lat: issue.Issue_img[0].lat || null,
-						lng: issue.Issue_img[0].lng || null,
+						lat: issue.Issue_img[0].lat,
+						lng: issue.Issue_img[0].lng,
 					},
 					reportingLoc: {
-						lat: issue.user_lat || null,
-						lng: issue.user_lng || null,
+						lat: issue.user_lat,
+						lng: issue.user_lng,
 					},
 					imgUrl: issue.Issue_img[0].src || null,
 				};
+				console.log(element);
 				return element;
 			});
 			console.log(issueList);
