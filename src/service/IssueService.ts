@@ -132,6 +132,7 @@ class IssueService {
 
 			return { issueList };
 		} catch (err) {
+			console.log(err);
 			throw errorFactory(err);
 		}
 	}
