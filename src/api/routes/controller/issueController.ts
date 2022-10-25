@@ -24,7 +24,7 @@ export default {
 	},
 
 	async issueList(req: Request, res: Response, next: NextFunction) {
-		console.log(req.body.user);
+		//console.log(req.body.user);
 		try {
 			// ------------------------isDev------------------------
 			if (config.isDev) {
