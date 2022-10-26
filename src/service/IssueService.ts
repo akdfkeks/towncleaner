@@ -94,7 +94,7 @@ class IssueService {
 	}
 
 	public async getFixedPointIssues() {
-		return { data: fixedIssuePointList };
+		return { issueList: fixedIssuePointList };
 	}
 
 	public async getUserPointIssueList(issueListReq: IssueListReq) {

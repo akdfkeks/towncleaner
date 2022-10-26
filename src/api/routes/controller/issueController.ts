@@ -5,19 +5,19 @@ import { IssueCreateReq, IssueInfo, IssueSolveReq } from "../../../interface/Iss
 import { IssueListReq } from "../../../interface/Issue";
 import config from "../../../config";
 import { MSG } from "../../../config/message";
-import { issueCreateReqParser, issueListReqParser } from "../../../function/validate";
+import { issueCreateReqBodyParser, issueListReqBodyParser } from "../../../function/validate";
 
 export default {
 	// 미사용
 	async devIssueList(req: Request, res: Response, next: NextFunction) {
 		try {
 			const IssueServiceInstance = Container.get(IssueService);
-			const { data } = await IssueServiceInstance.getFixedPointIssues();
+			const { issueList } = await IssueServiceInstance.getFixedPointIssues();
 
 			res.status(200).json({
 				success: true,
 				message: "List of issues around the fixed point",
-				data: data,
+				data: issueList,
 			});
 		} catch (err) {
 			return next(err);
@@ -27,7 +27,10 @@ export default {
 	// 개발 완료
 	async issueList(req: Request, res: Response, next: NextFunction) {
 		try {
-			const userPointIssueListReq: IssueListReq = issueListReqParser(req.reqUser, req.body);
+			const userPointIssueListReq: IssueListReq = issueListReqBodyParser(
+				req.reqUser,
+				req.body
+			);
 			console.log(`Request location : [ ${req.body.lat}, ${req.body.lng} ]`);
 			const IssueServiceInstance = Container.get(IssueService);
 			const { issueList } = await IssueServiceInstance.getUserPointIssueList(
@@ -36,7 +39,7 @@ export default {
 
 			res.status(200).json({
 				success: true,
-				message: "User-point issue list",
+				message: MSG.SUCCESS.ISSUE.LOOKUP_LIST,
 				data: issueList,
 			});
 		} catch (err) {
@@ -63,7 +66,7 @@ export default {
 
 	async createIssue(req: Request, res: Response, next: NextFunction) {
 		try {
-			const issueCreateReq: IssueCreateReq = issueCreateReqParser(
+			const issueCreateReq: IssueCreateReq = issueCreateReqBodyParser(
 				req.reqUser,
 				req.file,
 				req.body
