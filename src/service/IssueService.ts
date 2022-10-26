@@ -7,7 +7,7 @@ import AuthModel from "../model/AuthModel";
 import { getLatLngFromImage } from "../function/exifParser";
 import EventEmitter from "eventemitter3";
 import { eventEmitter } from "../loader/listener";
-import { errorFactory } from "../function/errorTypeChecker";
+import { errorGenerator } from "../function/errorTypeChecker";
 import { IssueCreateError, IssueImageExifError } from "../error/Error";
 import { MSG } from "../config/message";
 import { Issue } from "@prisma/client";
@@ -133,7 +133,7 @@ class IssueService {
 
 			return { issueList };
 		} catch (err) {
-			throw errorFactory(err);
+			throw errorGenerator(err);
 		}
 	}
 
@@ -142,7 +142,7 @@ class IssueService {
 			const data = await this.issueModel.getIssueInfo(issueId);
 			return { data };
 		} catch (err) {
-			throw errorFactory(err);
+			throw errorGenerator(err);
 		}
 	}
 
@@ -162,7 +162,7 @@ class IssueService {
 
 			return { createdIssueResult: issueCreationResult };
 		} catch (err) {
-			throw errorFactory(err);
+			throw errorGenerator(err);
 		}
 	}
 
@@ -174,7 +174,7 @@ class IssueService {
 
 			return { issueSolveResult: null };
 		} catch (err) {
-			throw errorFactory(err);
+			throw errorGenerator(err);
 		}
 	}
 
