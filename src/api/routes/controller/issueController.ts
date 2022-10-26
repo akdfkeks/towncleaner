@@ -33,7 +33,6 @@ export default {
 			const { issueList } = await IssueServiceInstance.getUserPointIssueList(
 				userPointIssueListReq
 			);
-			console.log(issueList);
 
 			res.status(200).json({
 				success: true,
