@@ -24,29 +24,27 @@ model User {
 
 model Issue {
     id         Int           @id @default(autoincrement()) @db.UnsignedInt
-    user       User?         @relation(fields: [user_id], references: [id])
+    user       User          @relation(fields: [user_id], references: [id])
     user_id    String        @db.VarChar(20)
-    active     Boolean       @default(true)
+    active     Boolean       @default(false)
     solved     Boolean       @default(false)
     title      String        @default("") @db.VarChar(50)
     class      Int           @default(100)
     body       String        @default("") @db.Text
     created_at DateTime      @default(now()) @db.DateTime(0)
-    user_lat   Decimal       @db.Decimal(16, 14)
-    user_lng   Decimal       @db.Decimal(17, 14)
+    user_lat   Float         @db.Double
+    user_lng   Float         @db.Double
     Issue_img  Issue_image[]
 }
 
 model Detected_object {
-    id            Int           @id @default(autoincrement()) @db.UnsignedInt
-    img           Issue_image?  @relation(fields: [img_id], references: [id])
-    img_id        Int           @db.UnsignedInt
-    class         Object_class? @relation(fields: [class_id], references: [id])
-    class_id      Int?          @db.UnsignedInt
-    confidence    Float         @default(0) @map("prob") @db.Float
-    bounding_size Float         @default(0) @db.Float
-
-    @@map("Detected_obj")
+    id            Int          @id @default(autoincrement()) @db.UnsignedInt
+    image         Issue_image  @relation(fields: [image_id], references: [id])
+    image_id      Int          @db.UnsignedInt
+    class         Object_class @relation(fields: [class_id], references: [id])
+    class_id      Int          @db.UnsignedInt
+    confidence    Float        @default(0) @db.Double
+    bounding_size Float        @default(0) @db.Double
 }
 
 model Issue_image {
@@ -57,19 +55,18 @@ model Issue_image {
     src             String?           @db.VarChar(255)
     uploaded_at     DateTime          @default(now()) @db.DateTime(0)
     time            DateTime?         @db.DateTime(0)
-    lat             Decimal           @default(0.00000000000000) @db.Decimal(16, 14)
-    lng             Decimal           @default(0.00000000000000) @db.Decimal(17, 14)
+    lat             Float             @db.Double
+    lng             Float             @db.Double
     detected_object Detected_object[]
-
-    @@map("Issue_img")
 }
 
 model Post_image {
-    id      Int   @id @default(autoincrement()) @db.UnsignedInt
-    post    Post? @relation(fields: [post_id], references: [id])
-    post_id Int   @db.UnsignedInt
-
-    @@map("Post_img")
+    id          Int      @id @default(autoincrement()) @db.UnsignedInt
+    post        Post?    @relation(fields: [post_id], references: [id])
+    post_id     Int      @db.UnsignedInt
+    org_name    String   @db.VarChar(255)
+    src         String?  @db.VarChar(255)
+    uploaded_at DateTime @default(now()) @db.DateTime(0)
 }
 
 model Post {

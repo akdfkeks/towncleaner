@@ -3,7 +3,7 @@ import storage from "../config/s3Config";
 import config from "../config";
 import { log } from "console";
 import prisma from "../config/prisma";
-import { LatLng } from "../interface/IssueTemp";
+import { LatLng } from "../interface/Issue";
 import { detectObject } from "./childWorker";
 
 export async function processImage(issueId: number, fileName: string, location: LatLng) {

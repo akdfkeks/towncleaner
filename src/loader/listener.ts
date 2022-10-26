@@ -1,5 +1,5 @@
 import EventEmitter from "eventemitter3";
-import { LatLng } from "../interface/IssueTemp";
+import { LatLng } from "../interface/Issue";
 import { processImage } from "../function/imageUploader";
 
 export const eventEmitter = new EventEmitter();

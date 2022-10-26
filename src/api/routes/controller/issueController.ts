@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import IssueService from "../../../service/IssueService";
 import { Container } from "typedi";
-import { IssueCreateReq, IssueInfo, IssueSolveReq } from "../../../interface/IssueTemp";
-import { IssueListReq } from "../../../interface/IssueTemp";
+import { IssueCreateReq, IssueInfo, IssueSolveReq } from "../../../interface/Issue";
+import { IssueListReq } from "../../../interface/Issue";
 import config from "../../../config";
 import { MSG } from "../../../config/message";
-import { Decimal } from "@prisma/client/runtime";
+import { issueCreateReqParser, issueListReqParser } from "../../../function/validate";
 
 export default {
+	// 미사용
 	async devIssueList(req: Request, res: Response, next: NextFunction) {
 		try {
 			const IssueServiceInstance = Container.get(IssueService);
@@ -23,33 +24,16 @@ export default {
 		}
 	},
 
+	// 개발 완료
 	async issueList(req: Request, res: Response, next: NextFunction) {
-		//console.log(req.body.user);
 		try {
-			// ------------------------isDev------------------------
-			if (config.isDev) {
-				req.reqUser = { id: "test1", name: "dev" };
-			}
-			// ------------------------isDev------------------------
-
-			const userBoundIssusesReq: IssueListReq = {
-				user: { id: req.reqUser.id, name: null },
-				bound: {
-					sw: {
-						lat: new Decimal(req.body.user.southWest.lat),
-						lng: new Decimal(req.body.user.southWest.lng),
-					},
-					ne: {
-						lat: new Decimal(req.body.user.northEast.lat),
-						lng: new Decimal(req.body.user.northEast.lng),
-					},
-				},
-			};
-			// console.log(userBoundIssusesReq.bound);
+			const userPointIssueListReq: IssueListReq = issueListReqParser(req.reqUser, req.body);
+			console.log(`Request user : { ${req.body.lat}, ${req.body.lng} }`);
 			const IssueServiceInstance = Container.get(IssueService);
 			const { issueList } = await IssueServiceInstance.getUserPointIssueList(
-				userBoundIssusesReq
+				userPointIssueListReq
 			);
+			console.log(issueList);
 
 			res.status(200).json({
 				success: true,
@@ -80,27 +64,11 @@ export default {
 
 	async createIssue(req: Request, res: Response, next: NextFunction) {
 		try {
-			const issueCreateReq: IssueCreateReq = {
-				user: req.reqUser,
-				issue: {
-					title: req.body.title,
-					class: parseInt(req.body.class),
-					body: req.body.body,
-					issueLoc: null,
-					reportingLoc: {
-						lat: new Decimal(req.body.lat),
-						lng: new Decimal(req.body.lng),
-					},
-				},
-				image: {
-					originName: req.file.originalname,
-					fileName: req.file.filename,
-					class: null,
-					location: null,
-					src: null,
-					createdAt: null,
-				},
-			};
+			const issueCreateReq: IssueCreateReq = issueCreateReqParser(
+				req.reqUser,
+				req.file,
+				req.body
+			);
 
 			const IssueServiceInstance = Container.get(IssueService);
 			const { createdIssueResult } = await IssueServiceInstance.createIssue(issueCreateReq);

@@ -1,4 +1,4 @@
-import { UserAuthInfo } from "../../interface/IssueTemp";
+import { UserAuthInfo } from "../../interface/Issue";
 import { IssueContent } from "../../interface/Issue";
 import { LatLng } from "../../interface/Issue";
 
