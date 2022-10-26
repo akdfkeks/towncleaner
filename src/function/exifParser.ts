@@ -3,6 +3,7 @@ import fs from "fs";
 import { log } from "console";
 import { IssueImageExifError } from "../error/Error";
 import { MSG } from "../config/message";
+import { errorFactory } from "./errorTypeChecker";
 
 export function getLatLngFromImage(fileName: string) {
 	try {
@@ -10,8 +11,10 @@ export function getLatLngFromImage(fileName: string) {
 			tags: { GPSLatitude, GPSLongitude },
 		} = ExifParserFactory.create(fs.readFileSync(`uploads/${fileName}`)).parse();
 
+		if (!GPSLatitude || !GPSLongitude) throw new IssueImageExifError(MSG.FAILURE.IMAGE.PARSE);
+
 		return { lat: GPSLatitude, lng: GPSLongitude };
 	} catch (err) {
-		throw new IssueImageExifError(MSG.FAILURE.IMAGE.PARSE);
+		throw err;
 	}
 }

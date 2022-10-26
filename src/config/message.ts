@@ -13,12 +13,12 @@ export const MSG = {
 	},
 	FAILURE: {
 		ISSUE: {
-			CREATE: "Issue creation failed",
-			LOOKUP: "Issue information search failed",
-			LOOKUP_LIST: "Issue list search failed",
+			CREATE: "이슈 생성에 실패했습니다.",
+			LOOKUP: "이슈 정보 조회에 실패했습니다.",
+			LOOKUP_LIST: "이슈 목록 조회에 실패했습니다.",
 		},
 		IMAGE: {
-			PARSE: "Can't parse GPS from image'",
+			PARSE: "이미지에 위치태그 또는 GPS 정보가 존재하지 않습니다.",
 		},
 	},
 	ERROR: {

@@ -28,7 +28,7 @@ export default {
 	async issueList(req: Request, res: Response, next: NextFunction) {
 		try {
 			const userPointIssueListReq: IssueListReq = issueListReqParser(req.reqUser, req.body);
-			console.log(`Request user : { ${req.body.lat}, ${req.body.lng} }`);
+			console.log(`Request location : [ ${req.body.lat}, ${req.body.lng} ]`);
 			const IssueServiceInstance = Container.get(IssueService);
 			const { issueList } = await IssueServiceInstance.getUserPointIssueList(
 				userPointIssueListReq
