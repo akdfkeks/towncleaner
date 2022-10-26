@@ -1,23 +1,33 @@
 import prisma from "../config/prisma";
 import { Service } from "typedi";
-import { IssueCreateReq, Bound } from "../interface/IssueTemp";
+import { IssueCreateReq, Bound, LatLng } from "../interface/Issue";
 import config from "../config";
+import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime";
+import { PrismaClientError } from "../error/Error";
+
+/**
+ * 0.01 -> 1.1 km
+ * 0.1	-> 11.1 km
+ * 1.0	-> 111 km
+ */
+const LATRANGE = 0.2;
+const LNGRANGE = 0.2;
 
 @Service()
 class IssueModel {
 	constructor() {}
 
-	async getIssueListByUserBound(userBound: Bound) {
+	async getIssueListByUserPoint(userPoint: LatLng) {
 		const userBoundIssueList = await prisma.issue.findMany({
 			where: {
-				// user_lat: {
-				// 	lte: userBound.ne.lat, // max
-				// 	gte: userBound.sw.lat, // min
-				// },
-				// user_lng: {
-				// 	lte: userBound.ne.lng, // max
-				// 	gte: userBound.sw.lng, // min
-				// },
+				user_lat: {
+					lte: userPoint.lat + LATRANGE, // max
+					gte: userPoint.lat - LATRANGE, // min
+				},
+				user_lng: {
+					lte: userPoint.lng + LNGRANGE, // max
+					gte: userPoint.lng - LNGRANGE, // min
+				},
 				active: true,
 				solved: false,
 			},
@@ -41,22 +51,31 @@ class IssueModel {
 
 	async createIssue(issueRequest: IssueCreateReq) {
 		const { user, issue, image } = issueRequest;
-
-		const creationResult = await prisma.issue.create({
-			data: {
-				user: {
-					connect: { id: user.id },
+		try {
+			const creationResult = await prisma.issue.create({
+				data: {
+					user: {
+						connect: { id: user.id },
+					},
+					active: config.isDev,
+					title: issue.title,
+					class: issue.class,
+					body: issueRequest.issue.body,
+					user_lat: issue.userLocation.lat,
+					user_lng: issue.userLocation.lng,
 				},
-				active: config.isDev,
-				title: issue.title,
-				class: issue.class,
-				body: issueRequest.issue.body,
-				user_lat: issue.reportingLoc.lat,
-				user_lng: issue.reportingLoc.lng,
-			},
-		});
+			});
 
-		return creationResult;
+			return creationResult;
+		} catch (err) {
+			if (
+				err instanceof PrismaClientValidationError ||
+				err instanceof PrismaClientKnownRequestError
+			) {
+				throw new PrismaClientError(err);
+			}
+			throw err;
+		}
 	}
 
 	async getIssueInfo(issueId: number) {
