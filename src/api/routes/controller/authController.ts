@@ -2,6 +2,7 @@ import { LoginRequest, SignUpRequest } from "../../../interface/Auth";
 import { Request, Response, NextFunction } from "express";
 import AuthService from "../../../service/AuthService";
 import { Container } from "typedi";
+import { MSG } from "../../../config/message";
 
 export default {
 	async login(req: Request, res: Response, next: NextFunction) {
@@ -21,7 +22,7 @@ export default {
 			});
 			res.status(200).json({
 				success: true,
-				message: "Login Succeed",
+				message: MSG.SUCCESS.AUTH.SIGN_IN,
 				data: null,
 			});
 		} catch (e) {
@@ -38,7 +39,7 @@ export default {
 			const authServiceInstance = Container.get(AuthService);
 			const { signUpResult } = await authServiceInstance.signUp(signupRequest);
 
-			res.status(200).json({ success: true, message: "Signup Success", data: {} });
+			res.status(200).json({ success: true, message: "Signup Success", data: null });
 		} catch (e) {
 			next(e);
 		}
