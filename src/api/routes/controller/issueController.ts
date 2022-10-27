@@ -20,7 +20,7 @@ export default {
 
 			res.status(200).json({
 				success: true,
-				message: "List of issues around the fixed point",
+				message: MSG.SUCCESS.ISSUE.LOOKUP_LIST,
 				data: issueList,
 			});
 		} catch (err) {
@@ -31,10 +31,7 @@ export default {
 	// 개발 완료
 	async issueList(req: Request, res: Response, next: NextFunction) {
 		try {
-			const userPointIssueListReq: IssueListReq = issueListReqBodyParser(
-				req.reqUser,
-				req.body
-			);
+			const userPointIssueListReq: IssueListReq = issueListReqBodyParser(req);
 			console.log(`Request location : [ ${req.body.lat}, ${req.body.lng} ]`);
 			const IssueServiceInstance = Container.get(IssueService);
 			const { issueList } = await IssueServiceInstance.getUserPointIssueList(
@@ -70,11 +67,7 @@ export default {
 
 	async createIssue(req: Request, res: Response, next: NextFunction) {
 		try {
-			const issueCreateReq: IssueCreateReq = issueCreateReqBodyParser(
-				req.reqUser,
-				req.file,
-				req.body
-			);
+			const issueCreateReq: IssueCreateReq = issueCreateReqBodyParser(req);
 
 			const IssueServiceInstance = Container.get(IssueService);
 			const { createdIssueResult } = await IssueServiceInstance.createIssue(issueCreateReq);

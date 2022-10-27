@@ -4,7 +4,8 @@ import config from "../config";
 import { InvalidDataError } from "../error/Error";
 import { LatLng, UserAuthInfo } from "../interface/Issue";
 
-export function issueListReqBodyParser(reqUser: UserAuthInfo, body: any) {
+export function issueListReqBodyParser(req: Request) {
+	const { reqUser, body } = req;
 	try {
 		const point: LatLng = {
 			lat: parseFloat(body.lat),
@@ -17,7 +18,8 @@ export function issueListReqBodyParser(reqUser: UserAuthInfo, body: any) {
 	}
 }
 
-export function issueCreateReqBodyParser(reqUser: UserAuthInfo, file: any, body: any) {
+export function issueCreateReqBodyParser(req: Request) {
+	const { reqUser, file, body } = req;
 	try {
 		const issue: IssueContent = {
 			title: body.title,
