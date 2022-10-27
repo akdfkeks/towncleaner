@@ -8,80 +8,8 @@ import { getLatLngFromImage } from "../function/exifParser";
 import EventEmitter from "eventemitter3";
 import { eventEmitter } from "../loader/listener";
 import { errorGenerator } from "../function/errorTypeChecker";
-import { IssueCreateError, IssueImageExifError } from "../error/Error";
-import { MSG } from "../config/message";
+import { MSG, fixedPointIssueList } from "../config/message";
 import { Issue } from "@prisma/client";
-
-const fixedIssuePointList: IssueInfo[] = [
-	{
-		issueId: 1000,
-		issuer: "test1",
-		createdAt: null,
-		title: "현호집",
-		body: "현호네 집입니다",
-		class: 0,
-		issueLocation: {
-			lat: 37.454448442968726,
-			lng: 127.130440332797,
-		},
-		userLocation: {
-			lat: 37.454448442968726,
-			lng: 127.130440332797,
-		},
-		imgUrl: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
-	},
-	{
-		issueId: 1001,
-		issuer: "test1",
-		createdAt: null,
-		title: "현호집앞 GS25",
-		body: "현호네 집 앞 GS25 편의점 입니다",
-		class: 1,
-		issueLocation: {
-			lat: 37.45475010681343,
-			lng: 127.13059908661702,
-		},
-		userLocation: {
-			lat: 37.45475010681343,
-			lng: 127.13059908661702,
-		},
-		imgUrl: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
-	},
-	{
-		issueId: 1002,
-		issuer: "test1",
-		createdAt: null,
-		title: "현호집주변 CU",
-		body: "현호네 집 앞 CU 편의점 입니다",
-		class: 2,
-		issueLocation: {
-			lat: 37.4540213271891,
-			lng: 127.12965410009392,
-		},
-		userLocation: {
-			lat: 37.4540213271891,
-			lng: 127.12965410009392,
-		},
-		imgUrl: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
-	},
-	{
-		issueId: 1003,
-		issuer: "test1",
-		createdAt: null,
-		title: "현호집앞 더러운곳",
-		body: "현호가 쓰레기 무단투기하는 장소입니다",
-		class: 3,
-		issueLocation: {
-			lat: 37.45413091149697,
-			lng: 127.13037196908954,
-		},
-		userLocation: {
-			lat: 37.45413091149697,
-			lng: 127.13037196908954,
-		},
-		imgUrl: "https://towncleaner.s3.ap-northeast-2.amazonaws.com/56CDAC60-3DC2-417B-9B3A-4539F601E3A0_1_102_o.jpeg",
-	},
-];
 
 @Service()
 class IssueService {
@@ -94,14 +22,14 @@ class IssueService {
 	}
 
 	public async getFixedPointIssues() {
-		return { issueList: fixedIssuePointList };
+		return { issueList: fixedPointIssueList };
 	}
 
 	public async getUserPointIssueList(issueListReq: IssueListReq) {
 		try {
 			const { user, point } = issueListReq;
 
-			// TODO: 별도의 함수로 분리하기
+			// 별도의 함수로 분리할까?
 			if (point.lng > 132 || point.lng < 123) return { issueList: null };
 			if (point.lat > 43 || point.lat < 33) return { issueList: null };
 
@@ -128,7 +56,7 @@ class IssueService {
 			});
 
 			// ------------------------forDev------------------------
-			issueList.push(...fixedIssuePointList);
+			issueList.push(...fixedPointIssueList);
 			// ------------------------forDev------------------------
 
 			return { issueList };
@@ -168,24 +96,15 @@ class IssueService {
 
 	public async solveIssue(issueReq: IssueSolveReq) {
 		try {
-			const { lat, lng } = getLatLngFromImage(issueReq.image.fileName);
+			const { lat, lng }: LatLng = getLatLngFromImage(issueReq.image.fileName);
 
 			//
 
-			return { issueSolveResult: null };
+			return { issueSolveResult: true };
 		} catch (err) {
 			throw errorGenerator(err);
 		}
 	}
-
-	// private getBoundSize(userData: UserBound) {
-	// 	const width = Number(userData.northEast.lng) - Number(userData.southWest.lng);
-	// 	const height = Number(userData.northEast.lat) - Number(userData.southWest.lat);
-
-	// 	const result = width * height;
-
-	// 	if (result) return true;
-	// }
 }
 
 export default IssueService;

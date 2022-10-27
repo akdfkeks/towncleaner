@@ -34,8 +34,8 @@ export interface IssueCreateReq {
 }
 export interface IssueSolveReq {
 	user: UserAuthInfo;
-	issue: IssueContent;
-	image: IssueImageInfo;
+	issue: { body: string };
+	image: ImageInfo;
 }
 
 /** 내 주변 이슈 리스트 요청

@@ -37,3 +37,18 @@ export function issueCreateReqBodyParser(reqUser: UserAuthInfo, file: any, body:
 		throw new InvalidDataError(err);
 	}
 }
+
+export function issueSolveReqBodyParser(reqUser: UserAuthInfo, file: any, body: any) {
+	try {
+		const issue = {
+			body: body.body,
+		};
+		const image: ImageInfo = {
+			originName: file.originalname,
+			fileName: file.filename,
+		};
+		return { user: reqUser, issue, image };
+	} catch (err) {
+		throw new InvalidDataError(err);
+	}
+}

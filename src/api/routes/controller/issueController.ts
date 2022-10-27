@@ -5,7 +5,11 @@ import { IssueCreateReq, IssueInfo, IssueSolveReq } from "../../../interface/Iss
 import { IssueListReq } from "../../../interface/Issue";
 import config from "../../../config";
 import { MSG } from "../../../config/message";
-import { issueCreateReqBodyParser, issueListReqBodyParser } from "../../../function/validate";
+import {
+	issueCreateReqBodyParser,
+	issueListReqBodyParser,
+	issueSolveReqBodyParser,
+} from "../../../function/validate";
 
 export default {
 	// 미사용
@@ -87,19 +91,20 @@ export default {
 
 	async solveIssue(req: Request, res: Response, next: NextFunction) {
 		try {
-			// const issueSolveReq: IssueSolveReq = {
-			// 	user: req.reqUser,
-			// 	body: req.body.body,
-			// 	image: {
-			// 		originName: req.file.originalname,
-			// 		fileName: req.file.filename,
-			// 	},
-			// };
+			const issueSolveReq: IssueSolveReq = issueSolveReqBodyParser(
+				req.reqUser,
+				req.file,
+				req.body
+			);
 
-			// const IssueServiceInstance = Container.get(IssueService);
-			// const { issueSolveResult } = await IssueServiceInstance.solveIssue(issueSolveReq);
+			const IssueServiceInstance = Container.get(IssueService);
+			const { issueSolveResult } = await IssueServiceInstance.solveIssue(issueSolveReq);
 
-			res.status(200).json({ success: true, message: MSG.SUCCESS.ISSUE.SOLVE, data: null });
+			res.status(200).json({
+				success: true,
+				message: MSG.SUCCESS.ISSUE.SOLVE_TRY,
+				data: null,
+			});
 		} catch (err) {
 			return next(err);
 		}
