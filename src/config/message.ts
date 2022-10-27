@@ -3,13 +3,13 @@ import { IssueInfo } from "../interface/Issue";
 export const MSG = {
 	SUCCESS: {
 		AUTH: {
-			SIGN_IN: "Sign-in succeed",
-			SIGN_UP: "Sign-up succeed",
+			SIGN_IN: "로그인에 성공했습니다.",
+			SIGN_UP: "회원가입에 성공했습니다.",
 		},
 		ISSUE: {
-			CREATE: "Issue creation success",
-			LOOKUP: "Issue information search success",
-			LOOKUP_LIST: "Issue list search success",
+			CREATE: "이슈 제보에 성공했습니다.",
+			LOOKUP: "이슈 정보 조회에 성공했습니다.",
+			LOOKUP_LIST: "이슈 목록 조회에 성공했습니다.",
 			SOLVE_TRY: "해결 제보 신청에 성공했습니다.",
 		},
 	},
@@ -25,7 +25,7 @@ export const MSG = {
 	},
 	ERROR: {
 		AUTH: {
-			UN_AUTHORIZATION: "Unauthorization : ",
+			UN_AUTHORIZATION: "로그인이 필요한 기능입니다.",
 		},
 	},
 };
