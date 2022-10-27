@@ -5,6 +5,7 @@ import { log } from "console";
 import prisma from "../config/prisma";
 import { LatLng } from "../interface/Issue";
 import { detectObject } from "./childWorker";
+import axios from "axios";
 
 export async function processImage(issueId: number, fileName: string, location: LatLng) {
 	try {
@@ -31,8 +32,15 @@ export async function processImage(issueId: number, fileName: string, location: 
 
 		// 2. 이미지 물체 감지
 		detectObject(fileName, issueId, imageInfoCreateResult.id);
+
+		// 3. AI 서버로 요청
+		const detectionResult = await axios
+			.post("니집아이피/detect", { url: uploadResult.Location })
+			.catch((err) => {});
+		//console.log(detectionResult.data);
 	} catch (err) {
 		log(err);
+		throw err;
 	}
 }
 
