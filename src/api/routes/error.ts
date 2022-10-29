@@ -4,16 +4,13 @@ import { MSG } from "../../config/message";
 import { AbstractExpectedError, NotFoundError } from "../../error/Error";
 
 export default (app: Router) => {
-	app.use((req, res, next) => {
-		const err = new NotFoundError("Page not found");
-		next(err);
-	});
+	app.use((next: NextFunction) => next(new NotFoundError()));
 
 	// Error Handler
-	app.use((err, req, res: Response, next: NextFunction) => {
+	app.use((err, req: Request, res: Response, next: NextFunction) => {
 		if (err instanceof AbstractExpectedError) {
 			const { message, statusCode, code } = err;
-			res.status(statusCode || 500).json({ message, code, success: false });
+			res.status(statusCode || 500).json({ message, success: false });
 		} else {
 			console.log(err);
 			res.status(500).json({ success: false, message: "Internal server error" });

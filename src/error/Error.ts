@@ -6,15 +6,23 @@ export abstract class AbstractExpectedError extends Error {
 	}
 }
 
-abstract class AbstractAuthError extends AbstractExpectedError {}
-
 export class UnExpectedError extends Error {
 	code: string;
+	statusCode: number;
 	constructor(...args: any) {
 		super(...args);
 		this.code = "0";
 		this.name = "UnExpectedError";
 		this.stack = `${this.message}\n${new Error().stack}`;
+		this.statusCode = 500;
+
+		this.printError();
+	}
+
+	private printError() {
+		console.log("UnExpected Error");
+		console.log(this.message);
+		console.log(this.stack);
 	}
 }
 
@@ -23,6 +31,7 @@ export class NotFoundError extends AbstractExpectedError {
 		super(...args);
 		this.code = "1000";
 		this.name = "NotFoundError";
+		this.message = "페이지를 찾을 수 없습니다.";
 		this.stack = `${this.message}\n${new Error().stack}`;
 		this.statusCode = 404;
 	}
@@ -48,6 +57,16 @@ export class AuthenticationError extends AbstractExpectedError {
 	}
 }
 
+export class PermissionError extends AbstractExpectedError {
+	constructor(...args: any) {
+		super(...args);
+		this.code = "1002";
+		this.name = "PermissionError";
+		this.stack = `${this.message}\n${new Error().stack}`;
+		this.statusCode = 401;
+	}
+}
+
 export class InternalServerError extends AbstractExpectedError {
 	constructor(...args: any) {
 		super(...args);
@@ -55,6 +74,13 @@ export class InternalServerError extends AbstractExpectedError {
 		this.name = "InternalServerError";
 		this.stack = `${this.message}\n${new Error().stack}`;
 		this.statusCode = 500;
+		this.printError();
+	}
+
+	private printError() {
+		console.log("Internal Server Error");
+		console.log(this.message);
+		console.log(this.stack);
 	}
 }
 
@@ -73,16 +99,6 @@ export class IssueImageExifError extends AbstractExpectedError {
 		super(...args);
 		this.code = "1005";
 		this.name = "IssueImageExifError";
-		this.stack = `${this.message}\n${new Error().stack}`;
-		this.statusCode = 500;
-	}
-}
-
-export class IssueCreateError extends AbstractExpectedError {
-	constructor(...args: any) {
-		super(...args);
-		this.code = "1006";
-		this.name = "IssueCreateError";
 		this.stack = `${this.message}\n${new Error().stack}`;
 		this.statusCode = 500;
 	}
