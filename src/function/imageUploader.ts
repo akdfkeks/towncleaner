@@ -19,7 +19,12 @@ export async function s3Uploader(fileName: string) {
 	return { src: uploadResult.Location };
 }
 
-export async function issueImageHandler(issueId: number, fileName: string, location: LatLng) {
+export async function issueImageHandler(
+	issueId: number,
+	fileName: string,
+	originName: string,
+	location: LatLng
+) {
 	try {
 		const uploadResult = await s3Uploader(fileName);
 		const issueImageInfoCreateResult = await prisma.issue_image.create({
@@ -27,7 +32,7 @@ export async function issueImageHandler(issueId: number, fileName: string, locat
 				issue: {
 					connect: { id: issueId },
 				},
-				org_name: "",
+				org_name: originName,
 				src: uploadResult.src,
 				lat: location.lat,
 				lng: location.lng,

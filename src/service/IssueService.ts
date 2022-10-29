@@ -83,6 +83,7 @@ class IssueService {
 			const imageInfo = {
 				issueId: issueCreationResult.id,
 				fileName: issueReq.image.fileName,
+				originName: issueReq.image.originName,
 				location: { lat, lng },
 			};
 
