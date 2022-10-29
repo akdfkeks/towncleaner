@@ -100,6 +100,6 @@ export class IssueImageExifError extends AbstractExpectedError {
 		this.code = "1005";
 		this.name = "IssueImageExifError";
 		this.stack = `${this.message}\n${new Error().stack}`;
-		this.statusCode = 500;
+		this.statusCode = 400;
 	}
 }
