@@ -13,12 +13,34 @@ class SocietyService {
 					active: true,
 					solved: false,
 				},
-				take: 20,
-				skip: postListReq.index.lastPost ? 1 : 0,
-				...(postListReq.index.lastPost && { cursor: { id: postListReq.index.lastPost } }),
+				include: {
+					Post_img: true,
+				},
+				// 프론트의 개발이 미뤄져 임시로 주석처리.
+				// take: 20,
+				// skip: postListReq.index.lastPost ? 1 : 0,
+				// ...(postListReq.index.lastPost && { cursor: { id: postListReq.index.lastPost } }),
 			});
 
-			return postList;
+			// 임시입니다
+			const tempList = postList.map((post) => {
+				return {
+					title: post.title,
+					body: post.body,
+					category: post.category,
+					price: post.price,
+					image: post.Post_img[0].src,
+					uploadedAt: post.created_at,
+					userId: post.user_id,
+					location: {
+						lat: post.user_lat,
+						lng: post.user_lng,
+					},
+				};
+			});
+			return tempList;
+
+			//return postList;
 		} catch (err) {
 			throw new Error(err);
 		}
@@ -27,7 +49,19 @@ class SocietyService {
 	async createPost(createPostReq: PostCreateReq) {
 		try {
 			const postCreateResult = await prisma.post.create({
-				data: createPostReq.post,
+				data: {
+					title: createPostReq.post.title,
+					body: createPostReq.post.body,
+					price: createPostReq.post.price,
+					user_lat: createPostReq.post.userLocation.lat,
+					user_lng: createPostReq.post.userLocation.lng,
+					Post_img: {
+						create: {
+							org_name: createPostReq.image.originName,
+							src: createPostReq.image.src,
+						},
+					},
+				},
 			});
 
 			return postCreateResult;
