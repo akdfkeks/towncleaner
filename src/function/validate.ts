@@ -54,3 +54,47 @@ export function issueSolveReqBodyParser(reqUser: UserAuthInfo, file: any, body: 
 		throw new InvalidDataError(err);
 	}
 }
+
+export function postListReqBodyParser(req: Request, category: any) {
+	try {
+		const { reqUser } = req;
+		const location = {
+			lat: parseFloat(req.body.lat),
+			lng: parseFloat(req.body.lng),
+		};
+		// const index = {
+		// 	page: req.body.page,
+		// 	lastPost: req.body.lastPost,
+		// };
+
+		return { user: reqUser, category, location };
+	} catch (err) {
+		throw new InvalidDataError(err);
+	}
+}
+
+export function postCreateReqBodyParser(req: Request, category: any) {
+	try {
+		const user = req.reqUser;
+		const post = {
+			title: req.body.title,
+			body: req.body.body,
+			category: category,
+			price: req.body.price,
+			userLocation: {
+				lat: parseFloat(req.body.lat),
+				lng: parseFloat(req.body.lng),
+			},
+		};
+		const image = {
+			src: null,
+			createdAt: null,
+			location: null,
+			originName: req.file.originalname,
+			fileName: req.file.filename,
+		};
+		return { user, post, image };
+	} catch (err) {
+		throw new InvalidDataError(err);
+	}
+}
