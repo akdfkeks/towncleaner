@@ -86,7 +86,7 @@ class IssueService {
 				location: { lat, lng },
 			};
 
-			this.eventEmitter.emit("processImage", imageInfo);
+			this.eventEmitter.emit("issueImage", imageInfo);
 
 			return { createdIssueResult: issueCreationResult };
 		} catch (err) {

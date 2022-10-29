@@ -1,16 +1,18 @@
 import { Router } from "express";
 import society from "./controller/societyController";
+import { saveFileToLocal } from "../middlewares/saveFile";
+import { devJwtAuth } from "../middlewares/jwtAuth";
 
 const route = Router();
 
 export default (app: Router) => {
-	app.use("/society", route);
+	app.use("/society", devJwtAuth, route);
 
 	route.get("/quest", society.getQuestList);
-	route.post("/quest", society.createQuest);
+	route.post("/quest", saveFileToLocal.single("image"), society.createQuest);
 
 	route.get("/trade", society.getTradeList);
-	route.post("/trade", society.createTrade);
+	route.post("/trade", saveFileToLocal.single("image"), society.createTrade);
 
 	return app;
 };

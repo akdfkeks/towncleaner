@@ -1,10 +1,15 @@
 import { PostListReq, PostCreateReq } from "../interface/Society";
 import { Service } from "typedi";
 import prisma from "../config/prisma";
+import EventEmitter from "eventemitter3";
+import { eventEmitter } from "../loader/listener";
 
 @Service()
 class SocietyService {
-	constructor() {}
+	private eventEmitter: EventEmitter;
+	constructor() {
+		this.eventEmitter = eventEmitter;
+	}
 	async getPostList(postListReq: PostListReq) {
 		try {
 			const postList = await prisma.post.findMany({
@@ -25,6 +30,7 @@ class SocietyService {
 			// 임시입니다
 			const tempList = postList.map((post) => {
 				return {
+					id: post.id,
 					title: post.title,
 					body: post.body,
 					category: post.category,
@@ -50,19 +56,26 @@ class SocietyService {
 		try {
 			const postCreateResult = await prisma.post.create({
 				data: {
+					user: {
+						connect: {
+							id: createPostReq.user.id,
+						},
+					},
 					title: createPostReq.post.title,
+					category: createPostReq.post.category,
 					body: createPostReq.post.body,
 					price: createPostReq.post.price,
 					user_lat: createPostReq.post.userLocation.lat,
 					user_lng: createPostReq.post.userLocation.lng,
-					Post_img: {
-						create: {
-							org_name: createPostReq.image.originName,
-							src: createPostReq.image.src,
-						},
-					},
 				},
 			});
+
+			const data = {
+				postId: postCreateResult.id,
+				fileName: createPostReq.image.fileName,
+				originName: createPostReq.image.originName,
+			};
+			eventEmitter.emit("postImage", data);
 
 			return postCreateResult;
 		} catch (err) {

@@ -7,36 +7,40 @@ import { LatLng } from "../interface/Issue";
 import { detectObject } from "./childWorker";
 import axios from "axios";
 
-export async function processImage(issueId: number, fileName: string, location: LatLng) {
+export async function s3Uploader(fileName: string) {
+	const fileData: Buffer = fs.readFileSync(`uploads/${fileName}`);
+	const params: { Bucket: string; Key: string; Body: Buffer } = {
+		Bucket: config.bucketName,
+		Key: fileName,
+		Body: fileData,
+	};
+	const uploadResult = await storage.upload(params).promise();
+	console.log(uploadResult);
+	return { src: uploadResult.Location };
+}
+
+export async function issueImageHandler(issueId: number, fileName: string, location: LatLng) {
 	try {
-		// 1. 이미지 업로드
-		const fileContent: Buffer = fs.readFileSync(`uploads/${fileName}`);
-		const params: { Bucket: string; Key: string; Body: Buffer } = {
-			Bucket: config.bucketName,
-			Key: fileName,
-			Body: fileContent,
-		};
-		const uploadResult = await storage.upload(params).promise();
-		console.log(uploadResult);
-		const imageInfoCreateResult = await prisma.issue_image.create({
+		const uploadResult = await s3Uploader(fileName);
+		const issueImageInfoCreateResult = await prisma.issue_image.create({
 			data: {
 				issue: {
 					connect: { id: issueId },
 				},
 				org_name: "",
-				src: uploadResult.Location,
+				src: uploadResult.src,
 				lat: location.lat,
 				lng: location.lng,
 			},
 		});
 
 		// 2. 이미지 물체 감지
-		detectObject(fileName, issueId, imageInfoCreateResult.id);
+		detectObject(fileName, issueId, issueImageInfoCreateResult.id);
 
 		// 3. AI 서버로 요청
-		const detectionResult = await axios
-			.post("니집아이피/detect", { url: uploadResult.Location })
-			.catch((err) => {});
+		// const detectionResult = await axios
+		// 	.post("니집아이피/detect", { url: uploadResult.Location })
+		// 	.catch((err) => {});
 		//console.log(detectionResult.data);
 	} catch (err) {
 		log(err);
@@ -44,4 +48,22 @@ export async function processImage(issueId: number, fileName: string, location: 
 	}
 }
 
-export async function updateIssueImageClass() {}
+export async function postImageHandler(postId: number, fileName: string, originName: string) {
+	try {
+		const uploadResult = await s3Uploader(fileName);
+		const postImageInfoCreateResult = await prisma.post_image.create({
+			data: {
+				post: {
+					connect: {
+						id: postId,
+					},
+				},
+				src: uploadResult.src,
+				org_name: originName,
+			},
+		});
+	} catch (err) {
+		log(err);
+		throw err;
+	}
+}
