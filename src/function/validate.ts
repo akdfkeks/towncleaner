@@ -80,7 +80,7 @@ export function postCreateReqBodyParser(req: Request, category: any) {
 			title: req.body.title,
 			body: req.body.body,
 			category: category,
-			price: parseInt(req.body.price),
+			price: Math.abs(parseInt(req.body.price)),
 			userLocation: {
 				lat: parseFloat(req.body.lat),
 				lng: parseFloat(req.body.lng),
