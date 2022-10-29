@@ -4,7 +4,7 @@ import { MSG } from "../../config/message";
 import { AbstractExpectedError, NotFoundError } from "../../error/Error";
 
 export default (app: Router) => {
-	app.use((next: NextFunction) => next(new NotFoundError()));
+	app.use((req, res, next: NextFunction) => next(new NotFoundError()));
 
 	// Error Handler
 	app.use((err, req: Request, res: Response, next: NextFunction) => {
