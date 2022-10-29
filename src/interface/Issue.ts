@@ -61,7 +61,11 @@ export interface IssueImageInfo extends ImageInfo {
 	location: LatLng | null;
 }
 
-interface PostImageInfo extends ImageInfo {}
+export interface PostImageInfo extends ImageInfo {
+	src: string | null;
+	createdAt: Date | null;
+	location: LatLng | null;
+}
 
 export interface ImageInfo {
 	originName: string | null;

@@ -3,7 +3,7 @@ import fs from "fs";
 import { log } from "console";
 import { IssueImageExifError } from "../error/Error";
 import { MSG } from "../config/message";
-import { errorGenerator } from "./errorTypeChecker";
+import { errorGenerator } from "./errorGenerator";
 
 export function getLatLngFromImage(fileName: string) {
 	try {

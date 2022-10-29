@@ -3,7 +3,7 @@ import { Service } from "typedi";
 import { IssueCreateReq, Bound, LatLng } from "../interface/Issue";
 import config from "../config";
 import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime";
-import { PrismaClientError } from "../error/Error";
+import { InternalServerError, PrismaClientError } from "../error/Error";
 
 /**
  * 0.01 -> 1.1 km
@@ -18,35 +18,38 @@ class IssueModel {
 	constructor() {}
 
 	async getIssueListByUserPoint(userPoint: LatLng) {
-		const userBoundIssueList = await prisma.issue.findMany({
-			where: {
-				user_lat: {
-					lte: userPoint.lat + LATRANGE, // max
-					gte: userPoint.lat - LATRANGE, // min
+		try {
+			const userBoundIssueList = await prisma.issue.findMany({
+				where: {
+					user_lat: {
+						lte: userPoint.lat + LATRANGE, // max
+						gte: userPoint.lat - LATRANGE, // min
+					},
+					user_lng: {
+						lte: userPoint.lng + LNGRANGE, // max
+						gte: userPoint.lng - LNGRANGE, // min
+					},
+					active: true,
+					solved: false,
 				},
-				user_lng: {
-					lte: userPoint.lng + LNGRANGE, // max
-					gte: userPoint.lng - LNGRANGE, // min
+
+				select: {
+					id: true,
+					user_id: true,
+					solved: true,
+					title: true,
+					class: true,
+					body: true,
+					created_at: true,
+					user_lat: true,
+					user_lng: true,
+					Issue_img: true,
 				},
-				active: true,
-				solved: false,
-			},
-
-			select: {
-				id: true,
-				user_id: true,
-				solved: true,
-				title: true,
-				class: true,
-				body: true,
-				created_at: true,
-				user_lat: true,
-				user_lng: true,
-				Issue_img: true,
-			},
-		});
-
-		return userBoundIssueList;
+			});
+			return userBoundIssueList;
+		} catch (err) {
+			throw new InternalServerError(err);
+		}
 	}
 
 	async createIssue(issueRequest: IssueCreateReq) {
@@ -68,13 +71,7 @@ class IssueModel {
 
 			return creationResult;
 		} catch (err) {
-			if (
-				err instanceof PrismaClientValidationError ||
-				err instanceof PrismaClientKnownRequestError
-			) {
-				throw new PrismaClientError(err);
-			}
-			throw err;
+			throw new InternalServerError(err);
 		}
 	}
 
@@ -84,6 +81,7 @@ class IssueModel {
 				id: issueId,
 			},
 		});
+		return issueInfo;
 	}
 }
 
