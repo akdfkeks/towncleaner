@@ -7,7 +7,7 @@ import AuthModel from "../model/AuthModel";
 import { getLatLngFromImage } from "../function/exifParser";
 import EventEmitter from "eventemitter3";
 import { eventEmitter } from "../loader/listener";
-import { errorGenerator } from "../function/errorTypeChecker";
+import { errorGenerator } from "../function/errorGenerator";
 import { MSG, fixedPointIssueList } from "../config/message";
 import { Issue } from "@prisma/client";
 
