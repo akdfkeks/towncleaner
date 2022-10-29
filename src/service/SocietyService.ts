@@ -21,6 +21,9 @@ class SocietyService {
 				include: {
 					Post_img: true,
 				},
+				orderBy: {
+					created_at: "desc",
+				},
 				// 프론트의 개발이 미뤄져 임시로 주석처리.
 				// take: 20,
 				// skip: postListReq.index.lastPost ? 1 : 0,

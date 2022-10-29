@@ -44,21 +44,15 @@ export default {
 	},
 
 	async createTrade(req: Request, res: Response, next: NextFunction) {
-		// 	const createQuestReq: PostCreateReq = {
-		// 		user: req.reqUser,
-		// 		post: {
-		// 			category: "trade",
-		// 			title: req.body.title,
-		// 			body: req.body.body,
-		// 			price: parseInt(req.body.price),
-		// 		},
-		// 	};
-		// 	try {
-		// 		const SocietyServiceInstance = Container.get(SocietyService);
-		// 		const questCreationResult = await SocietyServiceInstance.createPost(createQuestReq);
-		// 		return res.status(200).json({ success: true, message: "Success", data: null });
-		// 	} catch (err) {
-		// 		next(err);
-		// 	}
+		const createQuestReq: PostCreateReq = postCreateReqBodyParser(req, "trade");
+
+		try {
+			const SocietyServiceInstance = Container.get(SocietyService);
+			const questCreationResult = await SocietyServiceInstance.createPost(createQuestReq);
+
+			return res.status(200).json({ success: true, message: "Success", data: null });
+		} catch (err) {
+			next(err);
+		}
 	},
 };
