@@ -8,26 +8,15 @@ const route = Router();
 export default (app: Router) => {
 	app.use("/issue", route);
 
-	route.use(function (req, res, next) {
-		next();
-	});
-
-	route.post("/asdf", jwtAuth, (req, res, next) => {
-		try {
-			res.status(200).json({ id: req.reqUser.id });
-		} catch (err) {
-			next(err);
-		}
-	});
 	route.post("/create", devJwtAuth, saveFileToLocal.single("image"), issueController.createIssue);
 
-	route.post("/:issueNo/solve", devJwtAuth, issueController.solveIssue);
+	//route.post("/:issueNo/solve", devJwtAuth, issueController.solveIssue);
 
 	route.get("/:issueNo", issueController.issueInfo);
 	route.patch("/:issueNo", issueController.issueInfo);
 
 	route.get("/", issueController.devIssueList);
-	route.post("/", issueController.issueList);
+	route.post("/", issueController.getIssueList);
 
 	return app;
 };

@@ -1,6 +1,5 @@
-import { IssueImageInfo, IssueSolveReq, LatLng } from "../interface/Issue";
+import { Issue, IssueImageInfo, LatLng } from "../interface/Issue";
 import { IssueListReq, IssueCreateReq } from "../interface/Issue";
-import { IssueInfo } from "../interface/Issue";
 import { Inject, Service } from "typedi";
 import IssueModel from "../model/IssueModel";
 import AuthModel from "../model/AuthModel";
@@ -9,7 +8,6 @@ import EventEmitter from "eventemitter3";
 import { eventEmitter } from "../loader/listener";
 import { errorGenerator } from "../function/errorGenerator";
 import { MSG, fixedPointIssueList } from "../config/message";
-import { Issue } from "@prisma/client";
 
 @Service()
 class IssueService {
@@ -21,36 +19,39 @@ class IssueService {
 		this.eventEmitter = eventEmitter;
 	}
 
-	public async getFixedPointIssues() {
+	public async getFixedPointIssueList() {
 		return { issueList: fixedPointIssueList };
 	}
 
 	public async getUserPointIssueList(issueListReq: IssueListReq) {
 		try {
-			const { user, point } = issueListReq;
+			const { user, location } = issueListReq;
 
-			// 별도의 함수로 분리할까?
-			if (point.lng > 132 || point.lng < 123) return { issueList: null };
-			if (point.lat > 43 || point.lat < 33) return { issueList: null };
-
-			const userPointIssueList = await this.issueModel.getIssueListByUserPoint(point);
+			const userPointIssueList = await this.issueModel.getIssueListByUserPoint(location);
 			const issueList = userPointIssueList.map((issue) => {
-				const element: IssueInfo = {
+				const element: Issue = {
 					issueId: issue.id,
-					issuer: issue.user_id,
+					userId: issue.user_id,
 					title: issue.title,
-					class: issue.class,
+					/* 지도에 표시될 0 ~ 4 값을 가지는 number
+					 * 나중에 다 배열형으로 바꾸던 어쩌던 해야할듯
+					 * DB 는 배열 지원 안하므로 비즈니스 로직에서 감지된 물체들 읽어와서
+					 * 반환할때만 배열형으로 할까 생각중 */
+					category: issue.class,
+					/* 감지된 물체, 0 ~ 24 값을 가지는 number
+					 * 마찬가지로 배열이 되야함 */
+					code: issue.Issue_img[0].detected_object[0].class_id,
 					body: issue.body,
 					createdAt: issue.created_at,
-					issueLocation: {
+					issueLoc: {
 						lat: issue.Issue_img[0].lat,
 						lng: issue.Issue_img[0].lng,
 					},
-					userLocation: {
+					userLoc: {
 						lat: issue.user_lat,
 						lng: issue.user_lng,
 					},
-					imgUrl: issue.Issue_img[0].src || null,
+					imgUrl: issue.Issue_img[0].src,
 				};
 				return element;
 			});
@@ -74,7 +75,7 @@ class IssueService {
 		}
 	}
 
-	public async createIssue(issueReq: IssueCreateReq): Promise<{ createdIssueResult: Issue }> {
+	public async createIssue(issueReq: IssueCreateReq) {
 		try {
 			const { lat, lng }: LatLng = getLatLngFromImage(issueReq.image.fileName);
 
@@ -95,17 +96,17 @@ class IssueService {
 		}
 	}
 
-	public async solveIssue(issueReq: IssueSolveReq) {
-		try {
-			const { lat, lng }: LatLng = getLatLngFromImage(issueReq.image.fileName);
+	// public async solveIssue(issueReq: IssueSolveReq) {
+	// 	try {
+	// 		const { lat, lng }: LatLng = getLatLngFromImage(issueReq.image.fileName);
 
-			//
+	// 		//
 
-			return { issueSolveResult: true };
-		} catch (err) {
-			throw errorGenerator(err);
-		}
-	}
+	// 		return { issueSolveResult: true };
+	// 	} catch (err) {
+	// 		throw errorGenerator(err);
+	// 	}
+	// }
 }
 
 export default IssueService;

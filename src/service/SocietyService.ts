@@ -68,8 +68,8 @@ class SocietyService {
 					category: createPostReq.post.category,
 					body: createPostReq.post.body,
 					price: createPostReq.post.price,
-					user_lat: createPostReq.post.userLocation.lat,
-					user_lng: createPostReq.post.userLocation.lng,
+					user_lat: createPostReq.post.userLoc.lat,
+					user_lng: createPostReq.post.userLoc.lng,
 				},
 			});
 

@@ -1,5 +1,5 @@
 import { UserAuthInfo } from "./Auth";
-import { ImageInfo, LatLng, PostImageInfo } from "./Issue";
+import { Image, LatLng } from "./Issue";
 
 export interface PostListReq {
 	user: UserAuthInfo | null;
@@ -11,7 +11,7 @@ export interface PostListReq {
 export interface PostCreateReq {
 	user: UserAuthInfo | null;
 	post: Post | null;
-	image: PostImageInfo | null;
+	image: Image | null;
 }
 
 export interface PostEntity {}
@@ -22,9 +22,9 @@ interface Index {
 }
 
 export interface Post {
-	category: "none" | "trade" | "quest";
 	title: string | null;
+	category: "none" | "trade" | "quest";
 	body: string | null;
 	price: number | null;
-	userLocation: LatLng;
+	userLoc: LatLng;
 }

@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { PostListReq, PostCreateReq } from "../../../interface/Society";
 import Container from "typedi";
 import SocietyService from "../../../service/SocietyService";
-import { postCreateReqBodyParser, postListReqBodyParser } from "../../../function/validate";
+import { postCreateReqParser, postListReqParser } from "../../../function/inputParser";
 
 export default {
 	async getQuestList(req: Request, res: Response, next: NextFunction) {
-		const questListReq: PostListReq = postListReqBodyParser(req, "quest");
+		const questListReq: PostListReq = postListReqParser(req, "quest");
 
 		try {
 			const SocietyServiceInstance = Container.get(SocietyService);
@@ -19,7 +19,7 @@ export default {
 	},
 
 	async createQuest(req: Request, res: Response, next: NextFunction) {
-		const createQuestReq: PostCreateReq = postCreateReqBodyParser(req, "quest");
+		const createQuestReq: PostCreateReq = postCreateReqParser(req, "quest");
 
 		try {
 			const SocietyServiceInstance = Container.get(SocietyService);
@@ -32,7 +32,7 @@ export default {
 	},
 
 	async getTradeList(req: Request, res: Response, next: NextFunction) {
-		const tradeListReq: PostListReq = postListReqBodyParser(req, "trade");
+		const tradeListReq: PostListReq = postListReqParser(req, "trade");
 		try {
 			const SocietyServiceInstance = Container.get(SocietyService);
 			const tradeList = await SocietyServiceInstance.getPostList(tradeListReq);
@@ -44,7 +44,7 @@ export default {
 	},
 
 	async createTrade(req: Request, res: Response, next: NextFunction) {
-		const createQuestReq: PostCreateReq = postCreateReqBodyParser(req, "trade");
+		const createQuestReq: PostCreateReq = postCreateReqParser(req, "trade");
 
 		try {
 			const SocietyServiceInstance = Container.get(SocietyService);

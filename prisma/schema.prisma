@@ -12,14 +12,15 @@ datasource db {
 }
 
 model User {
-    id         String    @id @db.VarChar(20)
-    pw         String    @db.VarChar(255)
-    role       User_role @default(user)
-    active     Boolean   @default(true)
-    created_at DateTime  @default(now()) @db.DateTime(0)
-    broom      Int       @default(0) @db.UnsignedInt
-    Issue      Issue[]
-    Post       Post[]
+    id           String         @id @db.VarChar(20)
+    pw           String         @db.VarChar(255)
+    role         User_role      @default(user)
+    active       Boolean        @default(true)
+    created_at   DateTime       @default(now()) @db.DateTime(0)
+    broom        Int            @default(0) @db.UnsignedInt
+    Issue        Issue[]
+    Post         Post[]
+    Post_comment Post_comment[]
 }
 
 model Issue {
@@ -28,6 +29,7 @@ model Issue {
     user_id    String        @db.VarChar(20)
     active     Boolean       @default(false)
     solved     Boolean       @default(false)
+    price      Int?          @default(100) @db.UnsignedInt
     title      String        @default("") @db.VarChar(50)
     class      Int           @default(100)
     body       String        @default("") @db.Text
@@ -70,19 +72,31 @@ model Post_image {
 }
 
 model Post {
-    id         Int          @id @default(autoincrement()) @db.UnsignedInt
-    user       User?        @relation(fields: [user_id], references: [id])
-    user_id    String       @db.VarChar(20)
-    title      String       @default("")
-    category   Category     @default(none)
-    body       String?      @default("") @db.Text
-    price      Int?         @db.UnsignedInt
-    active     Boolean      @default(true)
-    solved     Boolean      @default(false)
-    user_lat   Float        @db.Double
-    user_lng   Float        @db.Double
-    created_at DateTime     @default(now()) @db.DateTime(0)
-    Post_img   Post_image[]
+    id           Int            @id @default(autoincrement()) @db.UnsignedInt
+    user         User?          @relation(fields: [user_id], references: [id])
+    user_id      String         @db.VarChar(20)
+    title        String         @default("")
+    category     Category       @default(none)
+    body         String?        @default("") @db.Text
+    price        Int?           @db.UnsignedInt
+    active       Boolean        @default(true)
+    solved       Boolean        @default(false)
+    user_lat     Float          @db.Double
+    user_lng     Float          @db.Double
+    created_at   DateTime       @default(now()) @db.DateTime(0)
+    Post_img     Post_image[]
+    Post_comment Post_comment[]
+}
+
+model Post_comment {
+    id         Int      @id @default(autoincrement()) @db.UnsignedInt
+    user       User?    @relation(fields: [user_id], references: [id])
+    user_id    String?  @db.VarChar(20)
+    post       Post?    @relation(fields: [post_id], references: [id])
+    post_id    Int?     @db.UnsignedInt
+    body       String?  @default("") @db.Text
+    active     Boolean  @default(true)
+    created_at DateTime @default(now()) @db.DateTime(0)
 }
 
 model Object_class {

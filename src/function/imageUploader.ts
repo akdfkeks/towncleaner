@@ -40,13 +40,7 @@ export async function issueImageHandler(
 		});
 
 		// 2. 이미지 물체 감지
-		detectObject(fileName, issueId, issueImageInfoCreateResult.id);
-
-		// 3. AI 서버로 요청
-		// const detectionResult = await axios
-		// 	.post("니집아이피/detect", { url: uploadResult.Location })
-		// 	.catch((err) => {});
-		//console.log(detectionResult.data);
+		detectObject(fileName, issueId, issueImageInfoCreateResult.id, uploadResult.src);
 	} catch (err) {
 		log(err);
 		throw err;
