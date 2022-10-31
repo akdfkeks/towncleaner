@@ -17,34 +17,47 @@ const LNGRANGE = 0.2;
 class IssueModel {
 	constructor() {}
 
-	async getIssueListByUserPoint(userPoint: LatLng) {
+	async getIssueListByUserPoint(userLoc: LatLng) {
 		try {
 			const userBoundIssueList = await prisma.issue.findMany({
 				where: {
 					user_lat: {
-						lte: userPoint.lat + LATRANGE, // max
-						gte: userPoint.lat - LATRANGE, // min
+						lte: userLoc.lat + LATRANGE, // max
+						gte: userLoc.lat - LATRANGE, // min
 					},
 					user_lng: {
-						lte: userPoint.lng + LNGRANGE, // max
-						gte: userPoint.lng - LNGRANGE, // min
+						lte: userLoc.lng + LNGRANGE, // max
+						gte: userLoc.lng - LNGRANGE, // min
 					},
 					active: true,
 					solved: false,
 				},
-
-				select: {
-					id: true,
-					user_id: true,
-					solved: true,
-					title: true,
-					class: true,
-					body: true,
-					created_at: true,
-					user_lat: true,
-					user_lng: true,
-					Issue_img: true,
+				include: {
+					Issue_img: {
+						select: {
+							src: true,
+							lat: true,
+							lng: true,
+							detected_object: {
+								include: {
+									class: true,
+								},
+							},
+						},
+					},
 				},
+				// select: {
+				// 	id: true,
+				// 	user_id: true,
+				// 	solved: true,
+				// 	title: true,
+				// 	class: true,
+				// 	body: true,
+				// 	created_at: true,
+				// 	user_lat: true,
+				// 	user_lng: true,
+				// 	Issue_img: true,
+				// },
 			});
 			return userBoundIssueList;
 		} catch (err) {
@@ -53,7 +66,7 @@ class IssueModel {
 	}
 
 	async createIssue(issueRequest: IssueCreateReq) {
-		const { user, issue, image } = issueRequest;
+		const { user, issue } = issueRequest;
 		try {
 			const creationResult = await prisma.issue.create({
 				data: {
@@ -62,10 +75,10 @@ class IssueModel {
 					},
 					active: config.isDev,
 					title: issue.title,
-					class: issue.class,
+					//class: issue.,
 					body: issueRequest.issue.body,
-					user_lat: issue.userLocation.lat,
-					user_lng: issue.userLocation.lng,
+					user_lat: issue.userLoc.lat,
+					user_lng: issue.userLoc.lng,
 				},
 			});
 

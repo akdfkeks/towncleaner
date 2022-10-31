@@ -27,7 +27,7 @@ export function issueCreateReqParser(req: Request): IssueCreateReq {
 	try {
 		const contents: Contents = {
 			category: body.category,
-			class: body.class,
+			code: body.class,
 			title: body.title,
 			body: body.body,
 			userLoc: { lat: parseFloat(body.lat), lng: parseFloat(body.lng) },

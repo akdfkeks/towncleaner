@@ -1,22 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import IssueService from "../../../service/IssueService";
 import { Container } from "typedi";
-import { IssueCreateReq, IssueInfo, IssueSolveReq } from "../../../interface/Issue";
+import { IssueCreateReq } from "../../../interface/Issue";
 import { IssueListReq } from "../../../interface/Issue";
 import config from "../../../config";
 import { MSG } from "../../../config/message";
-import {
-	issueCreateReqBodyParser,
-	issueListReqBodyParser,
-	issueSolveReqBodyParser,
-} from "../../../function/validate";
+import { issueCreateReqParser, issueListReqParser } from "../../../function/inputParser";
 
 export default {
-	// 미사용
+	// dev api
 	async devIssueList(req: Request, res: Response, next: NextFunction) {
 		try {
 			const IssueServiceInstance = Container.get(IssueService);
-			const { issueList } = await IssueServiceInstance.getFixedPointIssues();
+			const { issueList } = await IssueServiceInstance.getFixedPointIssueList();
 
 			res.status(200).json({
 				success: true,
@@ -28,11 +24,10 @@ export default {
 		}
 	},
 
-	// 개발 완료
-	async issueList(req: Request, res: Response, next: NextFunction) {
+	async getIssueList(req: Request, res: Response, next: NextFunction) {
 		try {
-			const userPointIssueListReq: IssueListReq = issueListReqBodyParser(req);
-			console.log(`Request location : [ ${req.body.lat}, ${req.body.lng} ]`);
+			const userPointIssueListReq: IssueListReq = issueListReqParser(req);
+
 			const IssueServiceInstance = Container.get(IssueService);
 			const { issueList } = await IssueServiceInstance.getUserPointIssueList(
 				userPointIssueListReq
@@ -67,7 +62,7 @@ export default {
 
 	async createIssue(req: Request, res: Response, next: NextFunction) {
 		try {
-			const issueCreateReq: IssueCreateReq = issueCreateReqBodyParser(req);
+			const issueCreateReq: IssueCreateReq = issueCreateReqParser(req);
 
 			const IssueServiceInstance = Container.get(IssueService);
 			const { createdIssueResult } = await IssueServiceInstance.createIssue(issueCreateReq);
@@ -82,24 +77,24 @@ export default {
 		}
 	},
 
-	async solveIssue(req: Request, res: Response, next: NextFunction) {
-		try {
-			const issueSolveReq: IssueSolveReq = issueSolveReqBodyParser(
-				req.reqUser,
-				req.file,
-				req.body
-			);
+	// async solveIssue(req: Request, res: Response, next: NextFunction) {
+	// 	try {
+	// 		const issueSolveReq: IssueSolveReq = issueSolveReqParser(
+	// 			req.reqUser,
+	// 			req.file,
+	// 			req.body
+	// 		);
 
-			const IssueServiceInstance = Container.get(IssueService);
-			const { issueSolveResult } = await IssueServiceInstance.solveIssue(issueSolveReq);
+	// 		const IssueServiceInstance = Container.get(IssueService);
+	// 		const { issueSolveResult } = await IssueServiceInstance.solveIssue(issueSolveReq);
 
-			res.status(200).json({
-				success: true,
-				message: MSG.SUCCESS.ISSUE.SOLVE_TRY,
-				data: null,
-			});
-		} catch (err) {
-			return next(err);
-		}
-	},
+	// 		res.status(200).json({
+	// 			success: true,
+	// 			message: MSG.SUCCESS.ISSUE.SOLVE_TRY,
+	// 			data: null,
+	// 		});
+	// 	} catch (err) {
+	// 		return next(err);
+	// 	}
+	// },
 };

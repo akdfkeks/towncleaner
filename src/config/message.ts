@@ -1,4 +1,4 @@
-import { IssueInfo } from "../interface/Issue";
+import { Issue } from "../interface/Issue";
 
 export const MSG = {
 	SUCCESS: {
@@ -30,19 +30,20 @@ export const MSG = {
 	},
 };
 
-export const fixedPointIssueList: IssueInfo[] = [
+export const fixedPointIssueList: Issue[] = [
 	{
 		issueId: 1000,
-		issuer: "test1",
+		userId: "test1",
 		createdAt: null,
 		title: "현호집",
 		body: "현호네 집입니다",
-		class: 0,
-		issueLocation: {
+		code: 0,
+		category: 0,
+		issueLoc: {
 			lat: 37.454448442968726,
 			lng: 127.130440332797,
 		},
-		userLocation: {
+		userLoc: {
 			lat: 37.454448442968726,
 			lng: 127.130440332797,
 		},
@@ -50,16 +51,17 @@ export const fixedPointIssueList: IssueInfo[] = [
 	},
 	{
 		issueId: 1001,
-		issuer: "test1",
+		userId: "test1",
 		createdAt: null,
 		title: "현호집앞 GS25",
 		body: "현호네 집 앞 GS25 편의점 입니다",
-		class: 1,
-		issueLocation: {
+		category: 1,
+		code: 1,
+		issueLoc: {
 			lat: 37.45475010681343,
 			lng: 127.13059908661702,
 		},
-		userLocation: {
+		userLoc: {
 			lat: 37.45475010681343,
 			lng: 127.13059908661702,
 		},
@@ -67,16 +69,17 @@ export const fixedPointIssueList: IssueInfo[] = [
 	},
 	{
 		issueId: 1002,
-		issuer: "test1",
+		userId: "test1",
 		createdAt: null,
 		title: "현호집주변 CU",
 		body: "현호네 집 앞 CU 편의점 입니다",
-		class: 2,
-		issueLocation: {
+		category: 2,
+		code: 2,
+		issueLoc: {
 			lat: 37.4540213271891,
 			lng: 127.12965410009392,
 		},
-		userLocation: {
+		userLoc: {
 			lat: 37.4540213271891,
 			lng: 127.12965410009392,
 		},
@@ -84,16 +87,17 @@ export const fixedPointIssueList: IssueInfo[] = [
 	},
 	{
 		issueId: 1003,
-		issuer: "test1",
+		userId: "test1",
 		createdAt: null,
 		title: "현호집앞 더러운곳",
 		body: "현호가 쓰레기 무단투기하는 장소입니다",
-		class: 3,
-		issueLocation: {
+		category: 3,
+		code: 3,
+		issueLoc: {
 			lat: 37.45413091149697,
 			lng: 127.13037196908954,
 		},
-		userLocation: {
+		userLoc: {
 			lat: 37.45413091149697,
 			lng: 127.13037196908954,
 		},
