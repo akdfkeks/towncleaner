@@ -29,7 +29,7 @@ class IssueModel {
 						lte: userLoc.lng + LNGRANGE, // max
 						gte: userLoc.lng - LNGRANGE, // min
 					},
-					active: false,
+					active: true,
 					solved: false,
 				},
 				include: {
