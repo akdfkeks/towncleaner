@@ -29,7 +29,7 @@ class IssueModel {
 						lte: userLoc.lng + LNGRANGE, // max
 						gte: userLoc.lng - LNGRANGE, // min
 					},
-					active: true,
+					active: false,
 					solved: false,
 				},
 				include: {
@@ -46,18 +46,6 @@ class IssueModel {
 						},
 					},
 				},
-				// select: {
-				// 	id: true,
-				// 	user_id: true,
-				// 	solved: true,
-				// 	title: true,
-				// 	class: true,
-				// 	body: true,
-				// 	created_at: true,
-				// 	user_lat: true,
-				// 	user_lng: true,
-				// 	Issue_img: true,
-				// },
 			});
 			return userBoundIssueList;
 		} catch (err) {

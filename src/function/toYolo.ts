@@ -26,13 +26,16 @@ export async function toYolo(fileName: string, issueId: number, imageId: number,
 						detected_object: {
 							createMany: {
 								data: (function () {
-									return sortResult.map((data: Result) => {
+									const list = sortResult.map((data: Result) => {
 										return {
-											class_id: data.code,
+											// class id 는 1부터 시작함
+											class_id: data.code + 1,
 											confidence: data.conf,
 											bounding_size: data.size,
 										};
 									});
+									// console.log(list);
+									return list;
 								})(),
 							},
 						},
