@@ -61,7 +61,7 @@ class IssueModel {
 					user: {
 						connect: { id: user.id },
 					},
-					active: config.isDev,
+					active: false,
 					title: issue.title,
 					//class: issue.,
 					body: issueRequest.issue.body,

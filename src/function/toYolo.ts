@@ -3,18 +3,19 @@ import { sortResultByBboxWithConf, tempData } from "./detectionResultParser";
 import prisma from "../config/prisma";
 import { Result } from "../interface/Detection";
 import path from "path";
+import { categoryClassifier } from "./categoryClassifier";
 
 export async function toYolo(fileName: string, issueId: number, imageId: number, src: string) {
-	const YOLO_ADDRESS = "";
+	const YOLO_ADDRESS = "172.30.1.93:3000";
 	try {
-		// const detectionResult = await axios.post(`http://${YOLO_ADDRESS}/detect`, {
-		// 	fileName,
-		// 	url: src,
-		// });
+		const detectionResult = await axios.post(`http://${YOLO_ADDRESS}/detect`, {
+			fileName,
+			src,
+		});
 		//------------forDev------------------
-		const detectionResult = {
-			data: tempData,
-		};
+		// const detectionResult = {
+		// 	data: tempData,
+		// };
 
 		if (detectionResult.data.length > 0) {
 			const sortResult = sortResultByBboxWithConf(detectionResult.data);
@@ -34,7 +35,7 @@ export async function toYolo(fileName: string, issueId: number, imageId: number,
 											bounding_size: data.size,
 										};
 									});
-									// console.log(list);
+									console.log(list);
 									return list;
 								})(),
 							},
@@ -45,14 +46,7 @@ export async function toYolo(fileName: string, issueId: number, imageId: number,
 					where: { id: issueId },
 					data: {
 						active: true,
-						class: (function () {
-							if (sortResult[0].code <= 4) return 0;
-							if (sortResult[0].code <= 9) return 1;
-							if (sortResult[0].code <= 14) return 2;
-							if (sortResult[0].code <= 19) return 3;
-							if (sortResult[0].code <= 24) return 4;
-							return 100;
-						})(),
+						class: categoryClassifier(sortResult[0].code),
 					},
 				}),
 			]);
