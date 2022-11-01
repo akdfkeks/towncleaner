@@ -10,8 +10,8 @@ import { InternalServerError, PrismaClientError } from "../error/Error";
  * 0.1	-> 11.1 km
  * 1.0	-> 111 km
  */
-const LATRANGE = 0.2;
-const LNGRANGE = 0.2;
+const LATRANGE = 0.5;
+const LNGRANGE = 0.5;
 
 @Service()
 class IssueModel {
