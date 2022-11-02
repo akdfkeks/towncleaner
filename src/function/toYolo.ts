@@ -6,7 +6,7 @@ import path from "path";
 import { categoryClassifier } from "./categoryClassifier";
 
 export async function toYolo(fileName: string, issueId: number, imageId: number, src: string) {
-	const YOLO_ADDRESS = "172.30.1.93:3000";
+	const YOLO_ADDRESS = "192.168.0.25:3000";
 	try {
 		const detectionResult = await axios.post(`http://${YOLO_ADDRESS}/detect`, {
 			fileName,
@@ -30,7 +30,7 @@ export async function toYolo(fileName: string, issueId: number, imageId: number,
 									const list = sortResult.map((data: Result) => {
 										return {
 											// class id 는 1부터 시작함
-											class_id: data.code + 1,
+											class_id: data.code,
 											confidence: data.conf,
 											bounding_size: data.size,
 										};

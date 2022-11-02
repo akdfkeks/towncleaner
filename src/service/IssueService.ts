@@ -57,7 +57,7 @@ class IssueService {
 			});
 
 			// ------------------------forDev------------------------
-			issueList.push(...fixedPointIssueList);
+			//issueList.push(...fixedPointIssueList);
 			// ------------------------forDev------------------------
 
 			return { issueList };

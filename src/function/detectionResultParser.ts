@@ -9,8 +9,9 @@ export function sortResultByBboxWithConf(input: any[]) {
 
 function parseDetectionResult(input: any[]): Result[] {
 	return input.map((a): Result => {
+		console.log(parseInt(a.code) + 1);
 		return {
-			code: parseInt(a.code),
+			code: parseInt(a.code) + 1,
 			conf: parseFloat(a.conf),
 			size: parseFloat(a.bbox[2]) * parseFloat(a.bbox[3]),
 		};
