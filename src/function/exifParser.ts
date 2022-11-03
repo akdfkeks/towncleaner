@@ -9,7 +9,7 @@ export function getLatLngFromImage(fileName: string) {
 	try {
 		const {
 			tags: { GPSLatitude, GPSLongitude },
-		} = ExifParserFactory.create(fs.readFileSync(`uploads/${fileName}`)).parse();
+		} = ExifParserFactory.create(fs.readFileSync(`uploads/origin/${fileName}`)).parse();
 
 		if (!GPSLatitude || !GPSLongitude) throw new IssueImageExifError(MSG.FAILURE.IMAGE.PARSE);
 

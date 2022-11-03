@@ -7,16 +7,18 @@ import multer from "multer";
 import storage from "../../config/s3Config";
 
 try {
-	fs.readdirSync("uploads");
+	fs.readdirSync("uploads/origin");
+	fs.readdirSync("uploads/comp");
 } catch (err) {
 	console.error("Not Exist 'upload' Folder. Creating Folder...");
-	fs.mkdirSync("uploads");
+	fs.mkdirSync("uploads/origin");
+	fs.mkdirSync("uploads/comp");
 }
 
 export const saveFileToLocal = multer({
 	storage: multer.diskStorage({
 		destination: function (req, file, cb) {
-			cb(null, "uploads/");
+			cb(null, "uploads/origin");
 		},
 		filename: function (req, file, cb) {
 			cb(null, new Date().valueOf() + path.extname(file.originalname));

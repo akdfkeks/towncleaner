@@ -16,7 +16,7 @@ class ImageModel {
 	async uploadImageToS3(fileName: string) {
 		try {
 			const fileContent: Buffer = fs.readFileSync(
-				path.join(__dirname, `../../uploads/${fileName}`)
+				path.join(__dirname, `../../uploads/comp/${fileName}`)
 			);
 
 			const params: { Bucket: string; Key: string; Body: Buffer } = {

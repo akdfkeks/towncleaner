@@ -9,10 +9,18 @@ export async function toYolo(fileName: string, issueId: number, imageId: number,
 	const YOLO_ADDRESS = "221.148.26.122:3000";
 
 	try {
-		const detectionResult = await axios.post(`http://${YOLO_ADDRESS}/detect`, {
-			fileName,
-			src,
-		});
+		const detectionResult = await axios
+			.post(
+				`http://${YOLO_ADDRESS}/detect`,
+				{
+					fileName,
+					src,
+				},
+				{ timeout: 10000 }
+			)
+			.catch((error) => {
+				if (error.code === "ECONNABORTED") return null;
+			});
 		//------------forDev------------------
 		// const detectionResult = {
 		// 	data: tempData,
