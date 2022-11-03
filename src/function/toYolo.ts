@@ -6,7 +6,8 @@ import path from "path";
 import { categoryClassifier } from "./categoryClassifier";
 
 export async function toYolo(fileName: string, issueId: number, imageId: number, src: string) {
-	const YOLO_ADDRESS = "192.168.0.25:3000";
+	const YOLO_ADDRESS = "221.148.26.122:3000";
+
 	try {
 		const detectionResult = await axios.post(`http://${YOLO_ADDRESS}/detect`, {
 			fileName,
@@ -16,6 +17,7 @@ export async function toYolo(fileName: string, issueId: number, imageId: number,
 		// const detectionResult = {
 		// 	data: tempData,
 		// };
+		console.log(detectionResult.data);
 
 		if (detectionResult.data.length > 0) {
 			const sortResult = sortResultByBboxWithConf(detectionResult.data);
@@ -35,7 +37,7 @@ export async function toYolo(fileName: string, issueId: number, imageId: number,
 											bounding_size: data.size,
 										};
 									});
-									console.log(list);
+
 									return list;
 								})(),
 							},
@@ -54,6 +56,16 @@ export async function toYolo(fileName: string, issueId: number, imageId: number,
 				where: { id: updateResult[1].user_id },
 				data: { broom: { increment: 500 } },
 			});
+		} else {
+			const updateResult = await Promise.all([
+				await prisma.issue.update({
+					where: { id: issueId },
+					data: {
+						active: true,
+						class: 100,
+					},
+				}),
+			]);
 		}
 	} catch (err) {
 		console.log(err);

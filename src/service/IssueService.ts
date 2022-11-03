@@ -40,7 +40,10 @@ class IssueService {
 					category: issue.class,
 					/* 감지된 물체, 0 ~ 24 값을 가지는 number
 					 * 마찬가지로 배열이 되야함 */
-					code: issue.Issue_img[0].detected_object[0].class_id,
+					code:
+						issue.Issue_img[0].detected_object[0] !== undefined
+							? issue.Issue_img[0].detected_object[0].class_id
+							: 100,
 					body: issue.body,
 					createdAt: issue.created_at,
 					issueLoc: {

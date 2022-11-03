@@ -25,8 +25,8 @@ model User {
 
 model Issue {
     id         Int           @id @default(autoincrement()) @db.UnsignedInt
-    user       User          @relation(fields: [user_id], references: [id])
-    user_id    String        @db.VarChar(20)
+    user       User?         @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+    user_id    String?       @db.VarChar(20)
     active     Boolean       @default(false)
     solved     Boolean       @default(false)
     price      Int?          @default(100) @db.UnsignedInt
@@ -41,17 +41,17 @@ model Issue {
 
 model Detected_object {
     id            Int          @id @default(autoincrement()) @db.UnsignedInt
-    image         Issue_image  @relation(fields: [image_id], references: [id])
+    image         Issue_image  @relation(fields: [image_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
     image_id      Int          @db.UnsignedInt
-    class         Object_class @relation(fields: [class_id], references: [id])
-    class_id      Int          @db.UnsignedInt
+    class         Object_class @relation(fields: [class_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+    class_id      Int          @default(100) @db.UnsignedInt
     confidence    Float        @default(0) @db.Double
     bounding_size Float        @default(0) @db.Double
 }
 
 model Issue_image {
     id              Int               @id @default(autoincrement()) @db.UnsignedInt
-    issue           Issue?            @relation(fields: [issue_id], references: [id])
+    issue           Issue?            @relation(fields: [issue_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
     issue_id        Int               @db.UnsignedInt
     org_name        String            @db.VarChar(255)
     src             String?           @db.VarChar(255)
@@ -64,7 +64,7 @@ model Issue_image {
 
 model Post_image {
     id          Int      @id @default(autoincrement()) @db.UnsignedInt
-    post        Post?    @relation(fields: [post_id], references: [id])
+    post        Post?    @relation(fields: [post_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
     post_id     Int      @db.UnsignedInt
     org_name    String   @db.VarChar(255)
     src         String?  @db.VarChar(255)
@@ -73,8 +73,8 @@ model Post_image {
 
 model Post {
     id           Int            @id @default(autoincrement()) @db.UnsignedInt
-    user         User?          @relation(fields: [user_id], references: [id])
-    user_id      String         @db.VarChar(20)
+    user         User?          @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+    user_id      String?        @db.VarChar(20)
     title        String         @default("")
     category     Category       @default(none)
     body         String?        @default("") @db.Text
@@ -90,9 +90,9 @@ model Post {
 
 model Post_comment {
     id         Int      @id @default(autoincrement()) @db.UnsignedInt
-    user       User?    @relation(fields: [user_id], references: [id])
+    user       User?    @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
     user_id    String?  @db.VarChar(20)
-    post       Post?    @relation(fields: [post_id], references: [id])
+    post       Post?    @relation(fields: [post_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
     post_id    Int?     @db.UnsignedInt
     body       String?  @default("") @db.Text
     active     Boolean  @default(true)
