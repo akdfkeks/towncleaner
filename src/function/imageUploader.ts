@@ -64,7 +64,7 @@ export async function postImageHandler(postId: number, fileName: string, originN
 				org_name: originName,
 			},
 		});
-		prisma.post.update({
+		await prisma.post.update({
 			where: { id: postId },
 			data: {
 				active: true,
