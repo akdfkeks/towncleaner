@@ -79,7 +79,7 @@ model Post {
     category     Category       @default(none)
     body         String?        @default("") @db.Text
     price        Int?           @default(100) @db.UnsignedInt
-    active       Boolean        @default(true)
+    active       Boolean        @default(false)
     solved       Boolean        @default(false)
     user_lat     Float          @db.Double
     user_lng     Float          @db.Double
